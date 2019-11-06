@@ -6,9 +6,8 @@
 
 struct matrice_t{
   unsigned int *P; // Etudiants ( colonne )
-  unsigned int *I; // Lignes
+  char (*cours)[MAX]; // correspond a A.I
   unsigned int *matricules;
-  unsigned char (*cours)[MAX];
   size_t nbrLignes;
 };
 

@@ -75,10 +75,10 @@ MATRICE fichier_en_matrice(char* input){
       }
    }
 
-   for(int j = 0; j < nbrEtudiant; j++){
-     printf("[%s]", ToutLesMatricules[j]);
-   }
-
+/*   for(int j = 0; j < nbrEtudiant; j++){
+     printf("[%s]\n", ToutLesMatricules[j]);
+   }*/
+   //printf("%d", nbrEtudiant);
    fclose(fp);
    for(int j = 0; j < ALLOC*(multiple-1); j++)
      free(ToutLesMatricules[j]);
