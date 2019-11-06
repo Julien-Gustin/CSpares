@@ -56,7 +56,7 @@ MATRICE fichier_en_matrice(char* input){
 
     }
 
-        printf("%s %s %d\n", matricule, cours, nbrEtudiant);
+      //  printf("%s %s %d\n", matricule, cours, nbrEtudiant);
 
         while((l < nbrEtudiant) && strcmp(ToutLesMatricules[l], matricule) != 0 )l++; // si l == nbrEtudiant ça veut dire que c'est un nouvel étudiant
 
