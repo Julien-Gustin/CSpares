@@ -15,9 +15,19 @@ MATRICE fichier_en_matrice(char* input){
    int l = 0;
    int multiple = 2; // pour realloc
 
-   char **ToutLesMatricules = malloc(sizeof(char *)*ALLOC); //verif malloc
+   char **ToutLesMatricules = malloc(sizeof(char *)*ALLOC); // Matrice contenant ALLOC chaine de caractere de taille MAX, sert à contenir les matricules des étudiants
+      if (ToutLesMatricules == NULL){
+        printf("Probleme d'allocation\n");
+        exit(EXIT_FAILURE);
+      }
+
    for(int k = 0; k < ALLOC; k++){
-     ToutLesMatricules[k] = malloc(sizeof(char)*MAX); //verif malloc
+     ToutLesMatricules[k] = malloc(sizeof(char)*MAX); //Chaine de caractere contenant les matricules des étudiants, d'une taille maximum de MAX ( 70 )
+     if (ToutLesMatricules[k] == NULL){
+       printf("Probleme d'allocation\n");
+       free(ToutLesMatricules);
+       exit(EXIT_FAILURE);
+     }
    }
 
    MATRICE matrice;

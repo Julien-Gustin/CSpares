@@ -1,12 +1,12 @@
 #ifndef __MATRICES__
 #define __MATRICES__
 
-#define ALLOC 100
+#define ALLOC 500
 #define MAX 70
 
 struct matrice_t{
-  unsigned int *P;
-  unsigned int *I;
+  unsigned int *P; // Etudiants ( colonne )
+  unsigned int *I; // Lignes
 
 };
 
