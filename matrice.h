@@ -2,7 +2,8 @@
 #define __MATRICES__
 
 #define ALLOC 500
-#define MAX 70
+#define MAX 9
+#define MAX_LIGNES 80
 
 struct matrice_t{
   unsigned int *P; // Etudiants ( colonne )
