@@ -1,88 +1,76 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 #include "matrice.h"
+#include "Sort.h"
+/* ------------------------------------------------------------------------- *
+ * Stockes tout les matricules, cours et le nombres de lignes du fichier en mémoire
+ *
+ * PARAMETRES
+ * fp           Fichier contenant les matricules,cours,quadrimestre
+ * matrice      est une structure de données contenant les matricules, cours etc
+ * ------------------------------------------------------------------------- */
+static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
 
+static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
+  char ligne[MAX_LIGNES+1];
+  unsigned int nbrLignes = 0;
 
+  while(fgets(ligne, MAX_LIGNES, fp) != NULL) nbrLignes++; // comptes le nombres de lignes (O(n))
+  rewind(fp); // remet le curseur au début du fichier
+
+  unsigned int *matricules = malloc(sizeof(unsigned int)*nbrLignes); //matrice contenant tout les matricules du fichier meme ceux répétés
+  if(matricules == NULL)
+    return; //ERREUR ALLOC
+
+  char (*cours)[MAX] = malloc(sizeof(char[MAX])*nbrLignes); //matrice contenant tout les cours correspondant aux étudiants
+  if(cours == NULL)
+    return; //ERREUR ALLOC
+
+  for(size_t i = 0; i < nbrLignes; i++){ // O(n)
+    fscanf(fp, "%d", &matricules[i]); // matricules[i] contient le matricule d'un étudiant
+
+    fseek(fp, 1, SEEK_CUR); // permet d'ignorer la ',' mise apres le matricule
+
+    fgets(cours[i], MAX, fp);
+
+    fgets(ligne, MAX, fp); // passe la ligne ( pour ne pas compté le quadrimestre)
+  }
+
+    matrice->matricules = matricules;
+    matrice->cours = cours;
+    matrice->nbrLignes = nbrLignes;
+}
+//TELETYPE
 MATRICE fichier_en_matrice(char* input){
-   FILE *fp = fopen(input, "r");
+  FILE *fp = fopen(input, "r");
+  size_t etudiantDif = 1; // 1 car on commence me comptage à 1
+  size_t j = 0;
 
-   char ligne[MAX+1];
-   char matricule[MAX];
-   char cours[MAX];
+  MATRICE matrice;
 
-   int nbrEtudiant = 0;
-   int l = 0;
-   int multiple = 2; // pour realloc
+  fichier_en_memoire(fp, &matrice); // O(2n)
 
-   char **ToutLesMatricules = malloc(sizeof(char *)*ALLOC); // Matrice contenant ALLOC chaine de caractere de taille MAX, sert à contenir les matricules des étudiants
-      if (ToutLesMatricules == NULL){
-        printf("Probleme d'allocation\n");
-        exit(EXIT_FAILURE);
-      }
+  sort(matrice.matricules, matrice.cours, matrice.nbrLignes); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
 
-   for(int k = 0; k < ALLOC; k++){
-     ToutLesMatricules[k] = malloc(sizeof(char)*MAX); //Chaine de caractere contenant les matricules des étudiants, d'une taille maximum de MAX ( 70 )
-     if (ToutLesMatricules[k] == NULL){
-       printf("Probleme d'allocation\n");
-       free(ToutLesMatricules);
-       exit(EXIT_FAILURE);
-     }
-   }
+  for(size_t i = 1; i < matrice.nbrLignes; i++){ // trouve le nombres d'étudiants différents, O(n)
+    if(matrice.matricules[i-1] != matrice.matricules[i])
+      etudiantDif++;
 
-   MATRICE matrice;
+  }
 
-   while(fgets(ligne, MAX, fp) != NULL){
-     int i = 0;
-     int k = 0;
-     int j = 0;
+  matrice.P = malloc(sizeof(unsigned int) *etudiantDif); //A FAIRE :return erreur malloc
+  matrice.P[0] = 0;
 
-     l = 0;
-
-
-     if(ligne[0] != '\n'){ //on passe les lignes vides
-        for(; ligne[i]!= ','; i++) //prends tout les caracteres avant la première virgule et le stocke dans matricule
-          matricule[i] = ligne[i];
-
-        matricule[i] = '\0';
-        i++; //car ligne[i] = ','
-
-        for(j = 0; ligne[i] != ','; i++){
-          cours[j] = ligne[i]; //prends tout les caracteres avant la première virgule et le stocke dans cours
-          j++;
-        }
-
-        cours[j] = '\0';
-
+  for(size_t i = 1; i < matrice.nbrLignes; i++){ // trouve le nombres d'étudiants différents O(n)
+    if(matrice.matricules[i-1] != matrice.matricules[i]){
+      j++;
+      matrice.P[j] = i; //nombres d'éléments dans la colonne 'i'
     }
 
-      //  printf("%s %s %d\n", matricule, cours, nbrEtudiant);
+  }
 
-        while((l < nbrEtudiant) && strcmp(ToutLesMatricules[l], matricule) != 0 )l++; // si l == nbrEtudiant ça veut dire que c'est un nouvel étudiant
-
-        if(l == nbrEtudiant){
-            if((nbrEtudiant % ALLOC) == 0 && nbrEtudiant != 0){ //Pour chaque multiple de ALLOC on realloc de 100 à chaque fois
-              ToutLesMatricules = realloc(ToutLesMatricules, sizeof(char *)*ALLOC * multiple); //verif realloc
-
-              for(int k = ALLOC*(multiple-1); k < ALLOC*multiple; k++)
-                ToutLesMatricules[k] = malloc(sizeof(char)*MAX); //verif malloc
-
-              multiple++;
-            }
-
-            strcpy(ToutLesMatricules[l], matricule);
-            nbrEtudiant++;
-      }
-   }
-
-/*   for(int j = 0; j < nbrEtudiant; j++){
-     printf("[%s]\n", ToutLesMatricules[j]);
-   }*/
-   //printf("%d", nbrEtudiant);
-   fclose(fp);
-   for(int j = 0; j < ALLOC*(multiple-1); j++)
-     free(ToutLesMatricules[j]);
-
-   free(ToutLesMatricules);
-
+  fclose(fp);
+  return matrice;
 }

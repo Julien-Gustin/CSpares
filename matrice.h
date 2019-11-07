@@ -1,7 +1,6 @@
 #ifndef __MATRICES__
 #define __MATRICES__
 
-#define ALLOC 500
 #define MAX 9
 #define MAX_LIGNES 80
 
@@ -14,6 +13,6 @@ struct matrice_t{
 
 typedef struct matrice_t MATRICE;
 
-MATRICE fichier_en_matrice(char* input);
+MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
 
 #endif
