@@ -23,7 +23,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
   while(fgets(ligne, MAX, fp) != NULL) nbrLignes++; // comptes le nombres de lignes
   rewind(fp); // remet le curseur au début du fichier
 
-  unsigned int *matricules = malloc(sizeof(int)*nbrLignes); //matrice contenant tout les matricules du fichier meme ceux répétés
+  unsigned int *matricules = malloc(sizeof(unsigned int)*nbrLignes); //matrice contenant tout les matricules du fichier meme ceux répétés
   if(matricules == NULL)
     return; //ERREUR ALLOC
 
@@ -60,10 +60,12 @@ MATRICE fichier_en_matrice(char* input){
 
   sort(matrice.matricules, matrice.cours, matrice.nbrLignes); //trie la matrice ( chaque cours correpond bien à son étudiants )
 
+
   for(size_t i = 1; i < matrice.nbrLignes; i++){ // trouve le nombres d'étudiants différents
     if(matrice.matricules[i-1] != matrice.matricules[i])
       etudiantDif++;
 
+    printf("%d\n", matrice.matricules[i]);
   }
 
   matrice.P = malloc(sizeof(unsigned int) *etudiantDif); //A FAIRE :return erreur malloc
