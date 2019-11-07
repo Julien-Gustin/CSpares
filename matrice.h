@@ -15,4 +15,6 @@ typedef struct matrice_t MATRICE;
 
 MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
 
+//MATRICE transposee_matrice(MATRICE matrice);
+
 #endif
