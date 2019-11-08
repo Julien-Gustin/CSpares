@@ -43,7 +43,7 @@ int *matrice_vecteurs_dense(MATRICE *s, int *v) {
       /* Gardien de boucle */
       nbreElements += j;
       for(; j < nbreElements; ++j) {
-
+         z[j]= 
       }
 
 
