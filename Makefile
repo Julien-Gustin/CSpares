@@ -8,7 +8,7 @@
 
 # Tools & flags
 CC=gcc
-CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -g
+CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3
 LD=gcc
 
 # Files
@@ -34,6 +34,7 @@ matrice.o: matrice.c
 
 MergeSort.o: MergeSort.c
 	$(CC) -c MergeSort.c -o MergeSort.o $(CFLAGS)
-
+c:	$(EXEC_ALL)
+	./$(EXEC_ALL)
 clean:
 	rm -f *.o $(EXEC_ALL) *~
