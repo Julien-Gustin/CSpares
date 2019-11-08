@@ -94,6 +94,81 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
   free(R2);
 }
 
+static void Merge2(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, size_t length);
+
+static void Merge2(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, size_t length){
+  assert(p <= q && q < length); // On ne peut pas avoir de tableau vide
+  assert(length > 0);
+
+  size_t n1 = q - p + 1;
+  size_t n2 = length - q;
+  unsigned int *L = malloc(sizeof(unsigned int) *(n1)); // la dernière case du tableau est réservé pour le dernier entier possible
+  if(L == NULL)
+    return;
+
+  unsigned int *R = malloc(sizeof(unsigned int) *(n2)); // la dernière case du tableau est réservé pour le dernier entier possible
+  if(R == NULL)
+    return;
+
+  char (*L2)[MAX] = malloc(sizeof(char[MAX]) *(n1+1));
+  if(L2 == NULL)
+    return;
+
+  char (*R2)[MAX] = malloc(sizeof(char[MAX]) *(n2+1));
+  if(R2 == NULL)
+    return;
+
+  for(size_t i = 0; i < n1; i++) // copie une partie du tableau tel que : L[] = array[p..p+n1]
+    L[i] = array[p+i];
+
+  for(size_t j = 0; j < n2; j++) // copie une partie du tableau tel que : R[] = array[q+1..q+n2+1]
+    R[j] = array[q+j+1];
+
+  for(size_t i = 0; i < n1; i++)
+    strcpy(L2[i], cours[p+i]);
+
+  for(size_t j = 0; j < n2; j++)
+    strcpy(R2[j], cours[q+j+1]);
+
+  for(size_t i = 0; i < MAX; i++){
+    L2[n1][i] = CHAR_MAX; // Parce que rien n'est plus grand que INT_MAX
+    R2[n2][i] = CHAR_MAX;
+
+}
+
+  size_t i = 0;
+  size_t j = 0;
+
+  for(unsigned long k = p; k <= length; k++){ // Fusion
+    if(strcmp(L2[i],R2[j]) <= 0){
+      array[k] = L[i];
+      strcpy(cours[k], L2[i]);
+      i++;
+    }
+    else{
+      array[k] = R[j];
+      strcpy(cours[k], R2[j]);
+      j++;
+    }
+  }
+
+  free(L);
+  free(R);
+  free(L2);
+  free(R2);
+}
+
+static void MergeSort2(unsigned int* array, char (*cours)[MAX], size_t p, size_t length){
+
+  if(p < length){
+    size_t q = (length+p)/2; // Scinde le tableau en deux
+    MergeSort2(array, cours, p, q);
+    MergeSort2(array, cours, q+1, length);
+
+    Merge2(array, cours, p, q, length); // Fusionne deux sous tableaux déjà trié
+  }
+}
+
 static void MergeSort(unsigned int* array, char (*cours)[MAX], size_t p, size_t length){
 
   if(p < length){
@@ -110,4 +185,11 @@ void sort(unsigned int* array, char (*cours)[MAX], size_t length){
     return;
 
   MergeSort(array, cours, 0, length-1); //array[0..length-1]
+  }
+
+void sort_string(unsigned int* array, char (*cours)[MAX], size_t length){
+  if(array == NULL || length == 0)
+    return;
+
+  MergeSort2(array, cours, 0, length-1); //array[0..length-1]
   }

@@ -29,13 +29,16 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
     return; //ERREUR ALLOC
 
   for(size_t i = 0; i < nbrLignes; i++){ // O(n)
-    fscanf(fp, "%u", &matricules[i]); // matricules[i] contient le matricule d'un étudiant
+    if(fscanf(fp, "%u", &matricules[i]) != 1) // matricules[i] contient le matricule d'un étudiant
+      return; //exit
 
     fseek(fp, 1, SEEK_CUR); // permet d'ignorer la ',' mise apres le matricule
 
-    fgets(cours[i], MAX, fp);
+    if(fgets(cours[i], MAX, fp) != NULL)
+      return;
 
-    fgets(ligne, MAX_LIGNES, fp); // passe la ligne ( pour ne pas compté le quadrimestre)
+    if(fgets(ligne, MAX_LIGNES, fp) != NULL) // passe la ligne ( pour ne pas compté le quadrimestre)
+      return;
   }
 
     matrice->matricules = matricules;
@@ -74,3 +77,14 @@ MATRICE fichier_en_matrice(char* input){
   fclose(fp);
   return matrice;
 }
+/*
+MATRICE transposee_matrice(MATRICE matrice){
+
+  MATRICE matriceT = matrice;
+
+  sort_string(matriceT.matricules, matriceT.cours, matriceT.nbrLignes); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
+
+  for(size_t i = 0; )
+
+  return matriceT;
+}*/
