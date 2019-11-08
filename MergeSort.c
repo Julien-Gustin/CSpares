@@ -49,11 +49,11 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
   if(R == NULL)
     return;
 
-  char (*L2)[MAX] = malloc(sizeof(char[MAX]) *(n1)); // la dernière case du tableau est réservé pour le dernier entier possible
+  char (*L2)[MAX] = malloc(sizeof(char[MAX]) *(n1));
   if(L2 == NULL)
     return;
 
-  char (*R2)[MAX] = malloc(sizeof(char[MAX]) *(n2)); // la dernière case du tableau est réservé pour le dernier entier possible
+  char (*R2)[MAX] = malloc(sizeof(char[MAX]) *(n2));
   if(R2 == NULL)
     return;
 
@@ -63,12 +63,10 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
   for(size_t j = 0; j < n2; j++) // copie une partie du tableau tel que : R[] = array[q+1..q+n2+1]
     R[j] = array[q+j+1];
 
-  for(size_t i = 0; i < n1; i++){ // copie une partie du tableau tel que : L[] = array[p..p+n1]
+  for(size_t i = 0; i < n1; i++)
     strcpy(L2[i], cours[p+i]);
-  //  printf("[%s]", cours[p+i]);
-  }
 
-  for(size_t j = 0; j < n2; j++) // copie une partie du tableau tel que : R[] = array[q+1..q+n2+1]
+  for(size_t j = 0; j < n2; j++)
     strcpy(R2[j], cours[q+j+1]);
 
   L[n1] = INT_MAX; // Parce que rien n'est plus grand que INT_MAX

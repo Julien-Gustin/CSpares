@@ -29,13 +29,13 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
     return; //ERREUR ALLOC
 
   for(size_t i = 0; i < nbrLignes; i++){ // O(n)
-    fscanf(fp, "%d", &matricules[i]); // matricules[i] contient le matricule d'un étudiant
+    fscanf(fp, "%u", &matricules[i]); // matricules[i] contient le matricule d'un étudiant
 
     fseek(fp, 1, SEEK_CUR); // permet d'ignorer la ',' mise apres le matricule
 
     fgets(cours[i], MAX, fp);
 
-    fgets(ligne, MAX, fp); // passe la ligne ( pour ne pas compté le quadrimestre)
+    fgets(ligne, MAX_LIGNES, fp); // passe la ligne ( pour ne pas compté le quadrimestre)
   }
 
     matrice->matricules = matricules;

@@ -10,7 +10,7 @@ int main(){
   float temps;
 
   t1 = clock();
-  MATRICE matrice = fichier_en_matrice(input);
+  MATRICE matrice = fichier_en_matrice(input); // O(4n) + O(2nlogn)
   t2 = clock();
 
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
