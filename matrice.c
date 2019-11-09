@@ -151,3 +151,41 @@ MATRICE transposee_matrice(MATRICE matrice){
 
   return matriceT;
 }
+
+int *matrice_vecteurs_creux(MATRICE matrice, int *v){ // Documentation à revoir mais fatigue
+  VECTEUR vecteur;
+  int *z = calloc(matrice.nbrColonnes, sizeof(int)); //on remplit z de 0
+  vecteur.nbrNonZero = 0;
+
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){ //Compte le nombre de non zero, cad quand v[i] n'est pas égale à 0
+    if(v[i] != 0)
+      vecteur.nbrNonZero++;
+  }
+
+  vecteur.I = malloc(sizeof(unsigned int)*vecteur.nbrNonZero); // crée un vecteur creux de taille du nombres de non zero, (ligne)
+  vecteur.X = malloc(sizeof(int) *vecteur.nbrNonZero);
+  size_t k = 0;
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){ //remplit le vecteur avec les données
+    if(v[i] != 0){
+
+      vecteur.I[k] = i;
+      vecteur.X[k] = v[i];
+      k++;
+    }
+  }
+
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){
+    if(vecteur.I[i]+1 >= matrice.nbrColonnes-1){ // tant que vecteur.I+1 n'est pas égale aux nombres de colonnes de la matrice pas dans le cas [A.P(last) < nz]
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
+        z[matrice.I[j]] += matrice.X[j] * vecteur.X[i];
+      }
+
+
+    else{ // si le dernier matrice.P ne correpond pas au nz, le cas [A.P(last) = nz]
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++) //voir pour nz
+        z[matrice.I[j]] += matrice.X[j] * vecteur.X[i];
+  }
+}
+  return z;
+
+}
