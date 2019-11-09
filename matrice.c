@@ -47,8 +47,8 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 
   }
 
-    matrice->matricules = matricules;
-    matrice->cours = cours;
+    matrice->fichier.matricules = matricules;
+    matrice->fichier.cours = cours;
     matrice->nz = nbrLignes;
 }
 
@@ -62,24 +62,24 @@ MATRICE fichier_en_matrice(char* input){
 
   fichier_en_memoire(fp, &matrice); // O(2n)
 
-  sort_string(matrice.matricules, matrice.cours, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
+  sort_string(matrice.fichier.matricules, matrice.fichier.cours, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
 
   for(size_t i = 1; i < matrice.nz; i++){ // O(n), compte le nombres de cours différents
-    if(strcmp(matrice.cours[i-1], matrice.cours[i]) != 0)
+    if(strcmp(matrice.fichier.cours[i-1], matrice.fichier.cours[i]) != 0)
       coursDif++;
 
     }
 
-  matrice.coursDif = malloc(sizeof(char[MAX])* coursDif); // crée un tableau de char contenant tout les cours différents, trié par ordre alphabétique
+  matrice.fichier.coursDif = malloc(sizeof(char[MAX])* coursDif); // crée un tableau de char contenant tout les cours différents, trié par ordre alphabétique
   matrice.I = malloc(sizeof(unsigned int) * matrice.nz); // tableau qui contient les lignes tels que A.I = (1, 2, 1) ou 1 chaques nombres correponds à un cours dans le tableau matrice.coursDif
 
-  strcpy(matrice.coursDif[0], matrice.cours[0]); // prcq la boucle commence à 1
+  strcpy(matrice.fichier.coursDif[0], matrice.fichier.cours[0]); // prcq la boucle commence à 1
   matrice.I[0] = 0;
 
   for(size_t i = 1; i < matrice.nz; i++){ // O(n)
-    if(strcmp(matrice.cours[i-1], matrice.cours[i]) != 0){ // si cette condition est lévé cela veut dire que nous avons deux cours différents qui se suivent et vu qu'ils sont trié par ordre alphabétique nous pouvons concidérer que cours[i] est un cours pas encore écrits dans coursDif
+    if(strcmp(matrice.fichier.cours[i-1], matrice.fichier.cours[i]) != 0){ // si cette condition est lévé cela veut dire que nous avons deux cours différents qui se suivent et vu qu'ils sont trié par ordre alphabétique nous pouvons concidérer que cours[i] est un cours pas encore écrits dans coursDif
       j++;
-      strcpy(matrice.coursDif[j], matrice.cours[i]);
+      strcpy(matrice.fichier.coursDif[j], matrice.fichier.cours[i]);
       }
     matrice.I[i] = j;
 
@@ -87,10 +87,10 @@ MATRICE fichier_en_matrice(char* input){
 
   j = 0;
 
-  sort(matrice.matricules, matrice.I, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
+  sort(matrice.fichier.matricules, matrice.I, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
 
   for(size_t i = 1; i < matrice.nz; i++){ // trouve le nombres d'étudiants différents, O(n)
-    if(matrice.matricules[i-1] != matrice.matricules[i])
+    if(matrice.fichier.matricules[i-1] != matrice.fichier.matricules[i])
       etudiantDif++;
 
   }
@@ -99,37 +99,55 @@ MATRICE fichier_en_matrice(char* input){
   matrice.P[0] = 0;
 
   for(size_t i = 1; i < matrice.nz; i++){ // remplis matrice.P tel que chaque nouvelle case de ce tableau est une colonne ( donc un étudiant différents ) et le nombres stoqués dans la case est le numéro de l'élément O(n)
-    if(matrice.matricules[i-1] != matrice.matricules[i]){
+    if(matrice.fichier.matricules[i-1] != matrice.fichier.matricules[i]){
       j++;
       matrice.P[j] = i; //nombres d'éléments dans la colonne 'i'
     }
   }
 
-  matrice.nbrEtudiantDif = etudiantDif;
-  matrice.nbrCoursDif = coursDif;
+  matrice.nbrColonnes = etudiantDif;
+  matrice.nbrLignes = coursDif;
   fclose(fp);
   return matrice;
 }
 
 MATRICE transposee_matrice(MATRICE matrice){
-  MATRICE matriceT = matrice;
+  MATRICE matriceT; // on copie la matrice pour éviter de copier coller toute les matricules + cours etc
+  unsigned int *rowcount = calloc(matrice.nbrLignes, sizeof(unsigned int)); // nombres d'éléments dans chaque colonnes, chaque case correspond a un colonne
 
-  unsigned int *rowcount = malloc(sizeof(unsigned int) * matrice.nbrCoursDif);
+  matriceT.nz = matrice.nz; // meme nombres d'éléments
+  matriceT.fichier = matrice.fichier; // données du fichier
+  matriceT.X = matrice.X; //Exactement le meme car element n de A reste l'élément n de A_t
 
-  for(size_t j = 0; j < matrice.nbrCoursDif; j++) //calloc ?
-    rowcount[j] = 0;
-
+  matriceT.I = malloc(sizeof(unsigned int)*matriceT.nz);
+ /* == rowcount == */
   for(size_t k = 0; k < matrice.nz; k++) //calcul le rowcount
     rowcount[matrice.I[k]]++;
+ /* == fin rowcount == */
 
-  matriceT.P = malloc(sizeof(unsigned int) *matrice.nbrCoursDif);
+ /* == matrice.P == */
+  matriceT.P = malloc(sizeof(unsigned int) *matrice.nbrLignes);
   matriceT.P[0] = 0 ;
 
-  for(size_t i = 1; i < matrice.nbrCoursDif; i++){
+  for(size_t i = 1; i < matrice.nbrLignes; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1]
     matriceT.P[i] = matriceT.P[i-1] + rowcount[i-1];
-    printf("%d\n", matriceT.P[i]);
+ /* == fin matrice.P == */
+ free(rowcount);
+ /* == matrice.I == */
+  size_t j = 0;
+  size_t i = 0;
+  for(; i < matrice.nbrColonnes-1; i++){ //Remplit matrice.I
+    for(; j < matrice.P[i+1]; j++)
+      matriceT.I[j] = i;
+
   }
 
+  for(size_t k = j; k < matrice.nz; k++) // permet de aussi gérer le cas de entre le dernier éléments de A.P qui est tres rarement le dernir éléments
+    matriceT.I[k] = i;
+ /* == fin matrice.I == */
+
+  matriceT.nbrLignes = matrice.nbrColonnes; //on inverse le nombres de lignes et colonnes car transposée
+  matriceT.nbrColonnes = matrice.nbrLignes;
 
   return matriceT;
 }
