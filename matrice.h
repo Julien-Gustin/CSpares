@@ -11,7 +11,7 @@ struct matrice_t{
   char (*cours)[MAX];
   char (*coursDif)[MAX];
   unsigned int *matricules;
-  size_t nbrLignes;
+  size_t nz;
 };
 
 typedef struct matrice_t MATRICE;
