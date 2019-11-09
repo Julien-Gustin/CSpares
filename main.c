@@ -13,6 +13,8 @@ int main(){
   MATRICE matrice = fichier_en_matrice(input); // O(n log n) n = nbr lignes
   t2 = clock();
 
+  MATRICE matriceT = transposee_matrice(matrice);
+
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
   printf(" | durée de l'exécution = %f secondes\n", temps);
 

@@ -105,13 +105,31 @@ MATRICE fichier_en_matrice(char* input){
     }
   }
 
+  matrice.nbrEtudiantDif = etudiantDif;
+  matrice.nbrCoursDif = coursDif;
   fclose(fp);
   return matrice;
 }
-/*
-MATRICE transposee_matrice(MATRICE matrice){
 
+MATRICE transposee_matrice(MATRICE matrice){
   MATRICE matriceT = matrice;
 
+  unsigned int *rowcount = malloc(sizeof(unsigned int) * matrice.nbrCoursDif);
+
+  for(size_t j = 0; j < matrice.nbrCoursDif; j++) //calloc ?
+    rowcount[j] = 0;
+
+  for(size_t k = 0; k < matrice.nz; k++) //calcul le rowcount
+    rowcount[matrice.I[k]]++;
+
+  matriceT.P = malloc(sizeof(unsigned int) *matrice.nbrCoursDif);
+  matriceT.P[0] = 0 ;
+
+  for(size_t i = 1; i < matrice.nbrCoursDif; i++){
+    matriceT.P[i] = matriceT.P[i-1] + rowcount[i-1];
+    printf("%d\n", matriceT.P[i]);
+  }
+
+
   return matriceT;
-}*/
+}
