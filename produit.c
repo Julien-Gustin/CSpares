@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-typedef struct {
-   size_t nbreEtudiants;
-   unsigned int *i;
-   unsigned int *x;
-   unsigned int *p;
-   size_t nz;
-}MATRICE;
+/* Structure de test */
+// typedef struct {
+//    size_t nbreEtudiants;
+//    unsigned int *i;
+//    unsigned int *x;
+//    unsigned int *p;
+//    size_t nz;
+// }MATRICE;
 
 
  // Fait le produit d'une matrice creuse et d'un vecteur dense
@@ -46,14 +46,14 @@ int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t nbreLigneV) {
    for(size_t i = 0; i < s->nbreEtudiants ; ++i) {
       /* Calcule le nombres d'éléments dans la collone i */
       if(i < s->nbreEtudiants -1)
-         nbreElements = s->p[i+1] - s->p[i] ;
+         nbreElements = s->P[i+1] - s->P[i] ;
       else // Derniere collone
-         nbreElements = s->nz - s->p[i] ;
+         nbreElements = s->nz - s->P[i] ;
 
       /* Parcours tous les éléments d'une collone */
       nbreElements += j;
       for(; j < nbreElements; ++j) {
-         z[s->i[j]] += s->x[j] * v[k]; // Multiplications des composantes
+         z[s->I[j]] += s->X[j] * v[k]; // Multiplications des composantes
       }
       ++k; // Car sa veut dire qu'on change de colone dans A.x[]
    }
