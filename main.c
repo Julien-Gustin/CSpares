@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "matrice.h"
+#include "produit.h"
 
 int main(){
 
@@ -65,7 +67,34 @@ int main(){
   for(size_t i = 0; i < 5; i++)
     printf("%d, ", z[i]);
 */
+   /*-----------------------------------------------------------------*/
+   /* Points 3 */
 
+
+   int *vecteur1 = malloc(sizeof(int)* matrice.nbrColonnes);
+   if(!vecteur1) {
+      fprintf(stderr, "Erreur lors de l'allocation!\n");
+      return 1;
+   }
+
+   /* Remplir le vecteur de 1 */
+   for(size_t k = 0; k < matrice.nbrColonnes; ++k)
+      vecteur1[k] = 1;
+   int *resultat =
+      matrice_vecteurs_dense(&matrice, vecteur1, matrice.nbrColonnes) ;
+
+   /* Utilisons notre disctionnaire */
+
+   printf("Nombre d'étudiants qui suivent le cours de:\n");
+   for(size_t k = 0; k < matrice.nbrLignes; ++k)
+      printf("%s:  %d\n", matrice.fichier.coursDif[k], resultat[k]);
+
+
+
+   free(vecteur1);
+   free(resultat);
+
+   /*-----------------------------------------------------------------*/
 
 
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;

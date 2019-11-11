@@ -13,8 +13,8 @@ LD=gcc
 
 # Files
 EXEC_WILCOXON=main
-MODULES_WILCOXON=main.c matrice.c MergeSort.c
-OBJECTS_WILCOXON=main.o matrice.o MergeSort.o
+MODULES_WILCOXON=main.c matrice.c MergeSort.c produit.c
+OBJECTS_WILCOXON=main.o matrice.o MergeSort.o produit.o
 
 
 EXEC_ALL=main
@@ -34,7 +34,12 @@ matrice.o: matrice.c
 
 MergeSort.o: MergeSort.c
 	$(CC) -c MergeSort.c -o MergeSort.o $(CFLAGS)
+
+produit.o: produit.c
+	$(CC) -c produit.c -o produit.o $(CFLAGS)
+
 c:	$(EXEC_ALL)
 	./$(EXEC_ALL)
+
 clean:
 	rm -f *.o $(EXEC_ALL) *~
