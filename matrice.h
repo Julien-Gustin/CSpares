@@ -6,9 +6,12 @@
 
 struct matrice_t{
   unsigned int *P; // Etudiants ( colonne )
-  char (*cours)[MAX]; // correspond a A.I
+  unsigned int *I; //
+  unsigned int *X;
+  char (*cours)[MAX];
+  char (*coursDif)[MAX];
   unsigned int *matricules;
-  size_t nbrLignes;
+  size_t nz;
 };
 
 typedef struct matrice_t MATRICE;

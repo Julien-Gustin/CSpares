@@ -20,7 +20,7 @@
  * p            l'indice du premier élément du tableau
  * length       Nombres d'éléments du tableau
  * ------------------------------------------------------------------------- */
-static void MergeSort(unsigned int* array, char (*cours)[MAX], size_t p, size_t length);
+static void MergeSort(unsigned int* array, unsigned int *cours, size_t p, size_t length);
 
 /* ------------------------------------------------------------------------- *
  * Fusionne deux sous tableau en un meme tableau array[p..length]
@@ -33,9 +33,9 @@ static void MergeSort(unsigned int* array, char (*cours)[MAX], size_t p, size_t 
  * q            array[q+1..length-q+1],
  * length       Nombres d'éléments du tableau (0 <= length)
  * ------------------------------------------------------------------------- */
-static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, size_t length);
+static void Merge(unsigned int* array, unsigned int *cours, size_t p, size_t q, size_t length);
 
-static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, size_t length){
+static void Merge(unsigned int* array, unsigned int *cours, size_t p, size_t q, size_t length){
   assert(p <= q && q < length); // On ne peut pas avoir de tableau vide
   assert(length > 0);
 
@@ -49,11 +49,11 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
   if(R == NULL)
     return;
 
-  char (*L2)[MAX] = malloc(sizeof(char[MAX]) *(n1));
+  unsigned int *L2 = malloc(sizeof(unsigned int) *(n1));
   if(L2 == NULL)
     return;
 
-  char (*R2)[MAX] = malloc(sizeof(char[MAX]) *(n2));
+  unsigned int *R2 = malloc(sizeof(unsigned int) *(n2));
   if(R2 == NULL)
     return;
 
@@ -64,10 +64,10 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
     R[j] = array[q+j+1];
 
   for(size_t i = 0; i < n1; i++)
-    strcpy(L2[i], cours[p+i]);
+    L2[i] = cours[p+i];
 
   for(size_t j = 0; j < n2; j++)
-    strcpy(R2[j], cours[q+j+1]);
+    R2[j] = cours[q+j+1];
 
   L[n1] = INT_MAX; // Parce que rien n'est plus grand que INT_MAX
   R[n2] = INT_MAX;
@@ -78,12 +78,12 @@ static void Merge(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, s
   for(unsigned long k = p; k <= length; k++){ // Fusion
     if(L[i] <= R[j]){
       array[k] = L[i];
-      strcpy(cours[k], L2[i]);
+      cours[k] = L2[i];
       i++;
     }
     else{
       array[k] = R[j];
-      strcpy(cours[k], R2[j]);
+      cours[k] = R2[j];
       j++;
     }
   }
@@ -169,7 +169,7 @@ static void MergeSort2(unsigned int* array, char (*cours)[MAX], size_t p, size_t
   }
 }
 
-static void MergeSort(unsigned int* array, char (*cours)[MAX], size_t p, size_t length){
+static void MergeSort(unsigned int* array, unsigned int *cours, size_t p, size_t length){
 
   if(p < length){
     size_t q = (length+p)/2; // Scinde le tableau en deux
@@ -180,7 +180,7 @@ static void MergeSort(unsigned int* array, char (*cours)[MAX], size_t p, size_t 
   }
 }
 
-void sort(unsigned int* array, char (*cours)[MAX], size_t length){
+void sort(unsigned int* array, unsigned int *cours, size_t length){
   if(array == NULL || length == 0)
     return;
 

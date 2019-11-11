@@ -10,7 +10,7 @@ int main(){
   float temps;
 
   t1 = clock();
-  MATRICE matrice = fichier_en_matrice(input); // O(4n) + O(2nlogn)
+  MATRICE matrice = fichier_en_matrice(input); // O(n log n) n = nbr lignes
   t2 = clock();
 
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
@@ -19,4 +19,7 @@ int main(){
   free(matrice.matricules);
   free(matrice.cours);
   free(matrice.P);
+  free(matrice.I);
+  free(matrice.coursDif);
+  free(matrice.X);
 }
