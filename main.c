@@ -16,8 +16,11 @@ int main(){
   t2 = clock();
 
   t3 = clock();
-  MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
+  statistique(matrice);
+  //MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
   t4 = clock();
+
+
 
  /* test de  mult_matrice_vecteurs_creux */
 
@@ -126,7 +129,7 @@ int main(){
   free(matrice.fichier.coursDif);
   free(matrice.X);
 
-  free(matriceT.I);
-  free(matriceT.P);
+  // free(matriceT.I);
+  // free(matriceT.P);
 
 }

@@ -23,7 +23,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
  * valeur       est la valeur à retrouvée
  * ------------------------------------------------------------------------- */
 static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur);
-
+static void stat_filles_cours(MATRICE matrice);
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 
   char ligne[MAX_LIGNES+1];
@@ -192,10 +192,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   unsigned int lignesDif = 1;
 
   //O(n) , n  = nombres de lignes
-
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
-    nombreLignes++; // pour vecteur
-
     if(vecteur.I[i] < matrice.nbrColonnes-1){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++)
         nombreLignes++; // pour matrice
@@ -211,8 +208,6 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   // O(n)
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
-    tab[k] = vecteur.I[i];
-    k++; // pour vecteur
 
     if(vecteur.I[i] < matrice.nbrColonnes-1){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
@@ -257,22 +252,72 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   //O(n)* O(nlogn)
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // trouve les composantes de z.X
-
-    if(vecteur.I[i] < matrice.nbrColonnes -1){ // nous ne sommes pas à la derniere colonnes de matrice.P
+        //  printf("%d : %d, %d\n", i, vecteur.I[i], matrice.nbrColonnes-1);
+    if(vecteur.I[i] < matrice.nbrColonnes-1 ){ // nous ne sommes pas à la derniere colonnes de matrice.P
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
         z.sommeTot += matrice.X[j] * vecteur.X[i];
+
       }
     }
     else{ // nous sommes à la dernière colonnes de matrice.P donc on va jusque nz
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
         z.sommeTot += matrice.X[j] * vecteur.X[i];
+
       }
     }
   }
 
+
 free(tab);
 return z;
 
+}
+
+static void stat_filles_cours(MATRICE matrice){
+  VECTEUR filles; // vecteur
+  unsigned int nbrFilles = 0;
+
+  // comptes le nombres filles du fichier ( nombres impair )
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+    if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
+      nbrFilles++;
+    }
+  }
+
+  filles.I = malloc(sizeof(unsigned int) *nbrFilles);
+  filles.X = malloc(nbrFilles *sizeof(int));
+
+  for(size_t i = 0; i < nbrFilles; i++)
+    filles.X[i] = 1;
+
+  filles.nbrNonZero = nbrFilles;
+  filles.sommeTot = 0;
+
+  size_t k = 0;
+
+  //stocke l'indice des matricules impair
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+    if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
+      filles.I[k] = i;
+      k++;
+    }
+  }
+
+
+  VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, filles);
+  //printf("%d\n", resulta);
+
+  for(size_t i = 0; i < resultat.nbrNonZero; i++)
+    printf("%s filles :%d\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);
+
+  free(resultat.X);
+  free(resultat.I);
+  free(filles.I);
+  free(filles.X);
+}
+
+void statistique(MATRICE matrice){
+  stat_filles_cours(matrice);
 }

@@ -11,7 +11,7 @@ typedef struct vecteur_t VECTEUR;
 struct donnee_t{
   char (*cours)[MAX]; // Tout les cours stocké avec repetition
   char (*coursDif)[MAX]; // Tout les cours stocké sans repetition
-  unsigned int *matricules; // Tout les matricules différentes
+  unsigned int *matricules; // Tout les matricules
 };
 
 struct matrice_t{
@@ -67,4 +67,5 @@ MATRICE transposee_matrice(MATRICE matrice);
  * ------------------------------------------------------------------------- */
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur);
 
+void statistique(MATRICE matrice);
 #endif
