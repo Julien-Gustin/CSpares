@@ -196,7 +196,6 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     if(vecteur.I[i] < matrice.nbrColonnes-1){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++)
         nombreLignes++; // pour matrice
-
     }
     else{
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++)
@@ -214,7 +213,6 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
         tab[k] = matrice.I[j];
         k++; // pour matrice
       }
-
     }
     else{
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){ // dernier élément de matrice.P ne correponds pas à nz
@@ -224,7 +222,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     }
   }
 
-  sortv3(tab, nombreLignes); // trie le tab TODO : quicksort? // O(nlogn)
+  quickSort(tab, nombreLignes); // trie le tab  O(nlogn)
 
   //O(n)
   for(size_t i = 1; i < nombreLignes; i++){ // compte le nombres de lignes différentes
@@ -257,18 +255,15 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
         z.sommeTot += matrice.X[j] * vecteur.X[i];
-
       }
     }
     else{ // nous sommes à la dernière colonnes de matrice.P donc on va jusque nz
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
         z.sommeTot += matrice.X[j] * vecteur.X[i];
-
       }
     }
   }
-
 
 free(tab);
 return z;
@@ -305,9 +300,7 @@ static void stat_filles_cours(MATRICE matrice){
     }
   }
 
-
   VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, filles);
-  //printf("%d\n", resulta);
 
   for(size_t i = 0; i < resultat.nbrNonZero; i++)
     printf("%s filles :%d\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);

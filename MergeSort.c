@@ -158,7 +158,7 @@ static void Merge2(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, 
   free(R2);
 }
 
-static void Merge3(unsigned int* array, size_t p, size_t q, size_t length);
+/*static void Merge3(unsigned int* array, size_t p, size_t q, size_t length);
 
 static void Merge3(unsigned int* array, size_t p, size_t q, size_t length){
   assert(p <= q && q < length); // On ne peut pas avoir de tableau vide
@@ -200,8 +200,8 @@ static void Merge3(unsigned int* array, size_t p, size_t q, size_t length){
   free(L);
   free(R);
 
-}
-
+}*/
+/*
 static void MergeSort3(unsigned int* array, size_t p, size_t length){
 
   if(p < length){
@@ -211,7 +211,7 @@ static void MergeSort3(unsigned int* array, size_t p, size_t length){
 
     Merge3(array, p, q, length); // Fusionne deux sous tableaux déjà trié
   }
-}
+}*/
 
 static void MergeSort2(unsigned int* array, char (*cours)[MAX], size_t p, size_t length){
 
@@ -241,13 +241,22 @@ void sort(unsigned int* array, unsigned int *cours, size_t length){
 
   MergeSort(array, cours, 0, length-1); //array[0..length-1]
   }
-
+/*
 void sortv3(unsigned int* array, size_t length){
   if(array == NULL || length == 0)
     return;
 
   MergeSort3(array, 0, length-1); //array[0..length-1]
-  }
+}
+*/
+
+static int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
+}
+
+void quickSort(unsigned int* array, size_t length){
+  qsort(array, length, sizeof(unsigned int), cmpfunc);
+}
 
 void sort_string(unsigned int* array, char (*cours)[MAX], size_t length){
   if(array == NULL || length == 0)
