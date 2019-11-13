@@ -191,6 +191,8 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   unsigned int nombreLignes = 0;
   unsigned int lignesDif = 1;
 
+  //O(n) , n  = nombres de lignes
+
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
     nombreLignes++; // pour vecteur
 
@@ -207,6 +209,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   unsigned int *tab = malloc(sizeof(unsigned int) *nombreLignes); //tableau contenant toutes les ligne matrice U vecteur
 
+  // O(n)
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
     tab[k] = vecteur.I[i];
     k++; // pour vecteur
@@ -226,8 +229,9 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     }
   }
 
-  sortv3(tab, nombreLignes); // trie le tab TODO : quicksort?
+  sortv3(tab, nombreLignes); // trie le tab TODO : quicksort? // O(nlogn)
 
+  //O(n)
   for(size_t i = 1; i < nombreLignes; i++){ // compte le nombres de lignes différentes
     if(tab[i-1] != tab[i])
       lignesDif++;
@@ -242,6 +246,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   z.I[0] = tab[0];
   k = 0;
 
+  // O(n)
   for(size_t i = 1; i < nombreLignes; i++){ //remplis z.I de lignes différentes
     if(tab[i-1] != tab[i]){
       k++;
@@ -249,6 +254,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     }
   }
 
+  //O(n)* O(nlogn)
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // trouve les composantes de z.X
 
     if(vecteur.I[i] < matrice.nbrColonnes -1){ // nous ne sommes pas à la derniere colonnes de matrice.P
