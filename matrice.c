@@ -13,6 +13,17 @@
  * ------------------------------------------------------------------------- */
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
 
+/* ------------------------------------------------------------------------- *
+ * Fait une recercheche dichotomique pour trouver l'indice du tableau correspondant à la valeur recherchée
+ *
+ * PARAMETRES
+ * tab          tableau d'entier positif triée
+ * debut        debut intervalle de recherche
+ * tailleTab    fin intervalle de recherche
+ * valeur       est la valeur à retrouvée
+ * ------------------------------------------------------------------------- */
+static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur);
+
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 
   char ligne[MAX_LIGNES+1];
@@ -29,7 +40,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
   if(cours == NULL)
     return; //ERREUR ALLOC
 
-  matrice->X = malloc(sizeof(unsigned int)*nbrLignes);
+  matrice->X = malloc(sizeof(int)*nbrLignes);
 
   for(size_t i = 0; i < nbrLignes; i++){ // O(n), copie colle le fichier en mémoire
     if(fscanf(fp, "%u", &matricules[i]) != 1) // matricules[i] contient le matricule d'un étudiant ( peut etre répétés)
@@ -51,6 +62,27 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
     matrice->fichier.cours = cours;
     matrice->nz = nbrLignes;
 }
+
+static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur){
+  while (debut <= tailleTab) {
+      int curseur = debut + (tailleTab - debut) / 2;
+
+      // Si la valeur du tableau ou pointe le curseur corresponds bien à la valeur
+      if (tab[curseur] == valeur)
+          return curseur;
+
+      // Si la valeur est trop grande, on ignore la moitier gauche restante du tab
+      if (tab[curseur] < valeur)
+          debut = curseur + 1;
+
+      // si la valeur est trop grande on igore la moitier droite du tab
+      else
+          tailleTab = curseur - 1;
+  }
+
+  return -1; // element pas présent
+}
+
 
 MATRICE fichier_en_matrice(char* input){
   FILE *fp = fopen(input, "r");
@@ -152,40 +184,88 @@ MATRICE transposee_matrice(MATRICE matrice){
   return matriceT;
 }
 
-int *matrice_vecteurs_creux(MATRICE matrice, int *v){ // Documentation à revoir mais fatigue
-  VECTEUR vecteur;
-  int *z = calloc(matrice.nbrColonnes, sizeof(int)); //on remplit z de 0
-  vecteur.nbrNonZero = 0;
-
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){ //Compte le nombre de non zero, cad quand v[i] n'est pas égale à 0
-    if(v[i] != 0)
-      vecteur.nbrNonZero++;
-  }
-
-  vecteur.I = malloc(sizeof(unsigned int)*vecteur.nbrNonZero); // crée un vecteur creux de taille du nombres de non zero, (ligne)
-  vecteur.X = malloc(sizeof(int) *vecteur.nbrNonZero);
+VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
+  // élément non nuls de B = nbrNonZero
+  VECTEUR z;
   size_t k = 0;
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){ //remplit le vecteur avec les données
-    if(v[i] != 0){
+  unsigned int nombreLignes = 0;
+  unsigned int lignesDif = 1;
 
-      vecteur.I[k] = i;
-      vecteur.X[k] = v[i];
-      k++;
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
+    nombreLignes++; // pour vecteur
+
+    if(vecteur.I[i] < matrice.nbrColonnes-1){
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++)
+        nombreLignes++; // pour matrice
+
+    }
+    else{
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++)
+        nombreLignes++; // pour matrice
     }
   }
 
-  for(size_t i = 0; i < vecteur.nbrNonZero; i++){
-    if(vecteur.I[i]+1 >= matrice.nbrColonnes-1){ // tant que vecteur.I+1 n'est pas égale aux nombres de colonnes de la matrice pas dans le cas [A.P(last) < nz]
-      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
-        z[matrice.I[j]] += matrice.X[j] * vecteur.X[i];
+  unsigned int *tab = malloc(sizeof(unsigned int) *nombreLignes); //tableau contenant toutes les ligne matrice U vecteur
+
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
+    tab[k] = vecteur.I[i];
+    k++; // pour vecteur
+
+    if(vecteur.I[i] < matrice.nbrColonnes-1){
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
+        tab[k] = matrice.I[j];
+        k++; // pour matrice
       }
 
-
-    else{ // si le dernier matrice.P ne correpond pas au nz, le cas [A.P(last) = nz]
-      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++) //voir pour nz
-        z[matrice.I[j]] += matrice.X[j] * vecteur.X[i];
+    }
+    else{
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){ // dernier élément de matrice.P ne correponds pas à nz
+        tab[k] = matrice.I[j];
+        k++;
+      }
+    }
   }
-}
-  return z;
+
+  sortv3(tab, nombreLignes); // trie le tab TODO : quicksort?
+
+  for(size_t i = 1; i < nombreLignes; i++){ // compte le nombres de lignes différentes
+    if(tab[i-1] != tab[i])
+      lignesDif++;
+  }
+
+  z.nbrNonZero = lignesDif;
+
+  /* Création z.I contenant les lignes non-zero du vecteur et z.X contenant le contenu de ces lignes */
+  z.I = malloc(sizeof(unsigned int)*lignesDif);
+  z.X = calloc(lignesDif, sizeof(int));
+
+  z.I[0] = tab[0];
+  k = 0;
+
+  for(size_t i = 1; i < nombreLignes; i++){ //remplis z.I de lignes différentes
+    if(tab[i-1] != tab[i]){
+      k++;
+      z.I[k] = tab[i];
+    }
+  }
+
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // trouve les composantes de z.X
+
+    if(vecteur.I[i] < matrice.nbrColonnes -1){ // nous ne sommes pas à la derniere colonnes de matrice.P
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
+        z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
+
+      }
+    }
+    else{ // nous sommes à la dernière colonnes de matrice.P donc on va jusque nz
+      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){
+        z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
+
+      }
+    }
+  }
+
+free(tab);
+return z;
 
 }

@@ -25,6 +25,15 @@ void sort(unsigned int* array, unsigned int *cours, size_t length);
  * array        Le tableau à trier
  * length       Nombres d'éléments du tableau
  * ------------------------------------------------------------------------- */
+void sortv3(unsigned int* array, size_t length);
+
+/* ------------------------------------------------------------------------- *
+ * Trie un tableau d'entier.
+ *
+ * PARAMETRES
+ * array        Le tableau à trier
+ * length       Nombres d'éléments du tableau
+ * ------------------------------------------------------------------------- */
 void sort_string(unsigned int* array, char (*cours)[MAX], size_t length);
 
 

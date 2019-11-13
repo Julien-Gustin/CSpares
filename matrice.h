@@ -17,7 +17,7 @@ struct donnee_t{
 struct matrice_t{
   unsigned int *P; // Etudiants ( colonne )
   unsigned int *I; // Ligne
-  unsigned int *X; // a transformer en int
+  int *X; // a transformer en int
   size_t nz;
 
   DONNEE fichier;
@@ -29,6 +29,7 @@ struct vecteur_t{
   unsigned int *I;
   int *X;
   unsigned int nbrNonZero;
+  unsigned int sommeTot;
 };
 
 
@@ -37,6 +38,6 @@ MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
 
 MATRICE transposee_matrice(MATRICE matrice);
 
-int *matrice_vecteurs_creux(MATRICE matrice, int *v);
+VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur);
 
 #endif
