@@ -15,29 +15,56 @@ struct donnee_t{
 };
 
 struct matrice_t{
-  unsigned int *P; // Etudiants ( colonne )
+  unsigned int *P; // la n-eme valeurs de la colonne
   unsigned int *I; // Ligne
-  int *X; // a transformer en int
-  size_t nz;
+  int *X; // valeur de la case
+  size_t nz; // nombres d'éléments
 
-  DONNEE fichier;
-  size_t nbrLignes;//nbrCoursDif;
-  size_t nbrColonnes;//nbr d'étudient différents
+  DONNEE fichier; // contient les données du fichier
+  size_t nbrLignes;
+  size_t nbrColonnes;
 };
 
 struct vecteur_t{
-  unsigned int *I;
-  int *X;
-  unsigned int nbrNonZero;
-  unsigned int sommeTot;
+  unsigned int *I; // lignes
+  int *X; // valeur de la ligne
+  unsigned int nbrNonZero; // nombres d'éléménts, donc taille de I
+  unsigned int sommeTot; // sommes de tout les éléments
 };
 
 
-
+/* ------------------------------------------------------------------------- *
+ * Renvois une matrice creuse, lu dans un fichier et transformeé en structure
+ *
+ * PARAMETRES
+ * input        nom du fichier
+ *
+ * RETURN
+ * matrice creuse
+ * ------------------------------------------------------------------------- */
 MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
 
+/* ------------------------------------------------------------------------- *
+ * Transpose la matrice données en argument ( structure )
+ *
+ * PARAMETRES
+ * matrice        matrice creuse en structure
+ *
+ * RETURN
+ * matrice creuse
+ * ------------------------------------------------------------------------- */
 MATRICE transposee_matrice(MATRICE matrice);
 
+/* ------------------------------------------------------------------------- *
+ * Multiplie une matrice creuse avec un vecteur creux et renvois cette multiplication
+ *
+ * PARAMETRES
+ * matrice        matrice creuse en structure
+ * vecteur        vecteur creux
+ *
+ * RETURN
+ * vecteur creux
+ * ------------------------------------------------------------------------- */
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur);
 
 #endif

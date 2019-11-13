@@ -238,6 +238,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   }
 
   z.nbrNonZero = lignesDif;
+  z.sommeTot = 0;
 
   /* Création z.I contenant les lignes non-zero du vecteur et z.X contenant le contenu de ces lignes */
   z.I = malloc(sizeof(unsigned int)*lignesDif);
@@ -260,13 +261,13 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     if(vecteur.I[i] < matrice.nbrColonnes -1){ // nous ne sommes pas à la derniere colonnes de matrice.P
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
-
+        z.sommeTot += matrice.X[j] * vecteur.X[i];
       }
     }
     else{ // nous sommes à la dernière colonnes de matrice.P donc on va jusque nz
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){
         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
-
+        z.sommeTot += matrice.X[j] * vecteur.X[i];
       }
     }
   }

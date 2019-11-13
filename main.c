@@ -82,6 +82,8 @@ int main(){
   //
   // for(size_t i = 0; i < z.nbrNonZero; i++)
   //   printf("%d\n", z.X[i]);
+  //
+  // printf("sommes : %d\n", z.sommeTot);
 
    /*-----------------------------------------------------------------*/
    /* Points 3 */
