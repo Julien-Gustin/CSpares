@@ -24,6 +24,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
  * ------------------------------------------------------------------------- */
 static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur);
 static void stat_filles_cours(MATRICE matrice);
+static void stat_cours_annee(MATRICE matrice, unsigned int annee);
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 
   char ligne[MAX_LIGNES+1];
@@ -144,12 +145,12 @@ MATRICE fichier_en_matrice(char* input){
 }
 
 MATRICE transposee_matrice(MATRICE matrice){
-  MATRICE matriceT; // on copie la matrice pour éviter de copier coller toute les matricules + cours etc
-  unsigned int *rowcount = calloc(matrice.nbrLignes, sizeof(unsigned int)); // nombres d'éléments dans chaque colonnes, chaque case correspond a un colonne
+  MATRICE matriceT;
+  unsigned int *rowcount = calloc(matrice.nz, sizeof(unsigned int)); // nombres d'éléments dans chaque colonnes, chaque case correspond a un colonne
 
   matriceT.nz = matrice.nz; // meme nombres d'éléments
   matriceT.fichier = matrice.fichier; // données du fichier
-  matriceT.X = matrice.X; //Exactement le meme car element n de A reste l'élément n de A_t
+  matriceT.X = malloc(sizeof(int)*matrice.nz); //A changer avec comme A.I
 
   matriceT.I = malloc(sizeof(unsigned int)*matriceT.nz);
  /* == rowcount == */
@@ -158,24 +159,40 @@ MATRICE transposee_matrice(MATRICE matrice){
  /* == fin rowcount == */
 
  /* == matrice.P == */
-  matriceT.P = malloc(sizeof(unsigned int) *matrice.nbrLignes);
+  matriceT.P = malloc(sizeof(unsigned int) *matrice.nz);
   matriceT.P[0] = 0 ;
 
-  for(size_t i = 1; i < matrice.nbrLignes; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1]
+  for(size_t i = 1; i < matrice.nz; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1]
     matriceT.P[i] = matriceT.P[i-1] + rowcount[i-1];
  /* == fin matrice.P == */
  free(rowcount);
  /* == matrice.I == */
-  size_t j = 0;
-  size_t i = 0;
-  for(; i < matrice.nbrColonnes-1; i++){ //Remplit matrice.I
-    for(; j < matrice.P[i+1]; j++)
-      matriceT.I[j] = i;
 
-  }
+ unsigned int lignes[matrice.nz];
+ unsigned int lignesPourX[matrice.nz];
 
-  for(size_t k = j; k < matrice.nz; k++) // permet de aussi gérer le cas de entre le dernier éléments de A.P qui est tres rarement le dernir éléments
-    matriceT.I[k] = i;
+ for(size_t i = 0; i < matrice.nz; i++){
+  lignes[i] = matrice.I[i];
+  lignesPourX[i] = matrice.I[i];
+  matriceT.X[i] = matrice.X[i];
+}
+
+ size_t j = 0;
+
+ for(size_t i = 0; i < matrice.nbrColonnes-1; i++){
+   for(j = matrice.P[i]; j < matrice.P[i+1]; j++){
+     matriceT.I[j] = i;
+   }
+ }
+
+ for(; j < matrice.nz; j++){
+     matriceT.I[j] = matrice.nbrColonnes-1;
+ }
+
+ sort(lignes, matriceT.I, matrice.nz);
+ sort(lignesPourX, matriceT.X, matrice.nz);
+
+
  /* == fin matrice.I == */
 
   matriceT.nbrLignes = matrice.nbrColonnes; //on inverse le nombres de lignes et colonnes car transposée
@@ -281,6 +298,11 @@ static void stat_filles_cours(MATRICE matrice){
     }
   }
 
+  if(nbrFilles == 0){
+    printf("Aucune fille");
+    return;
+  }
+
   filles.I = malloc(sizeof(unsigned int) *nbrFilles);
   filles.X = malloc(nbrFilles *sizeof(int));
 
@@ -311,6 +333,55 @@ static void stat_filles_cours(MATRICE matrice){
   free(filles.X);
 }
 
+static void stat_cours_annee(MATRICE matrice, unsigned int annee){
+  VECTEUR eleveAnnee;
+  unsigned int nbrELeveAnnee = 0;
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  //  printf("%u\n", matrice.fichier.matricules[matrice.P[i]] / 10000);
+    if(!((matrice.fichier.matricules[matrice.P[i]]/10000) % annee)){
+      nbrELeveAnnee++;
+    }
+  }
+
+  if(nbrELeveAnnee == 0){
+    printf("Aucun éléve de %u\n", annee);
+    return;
+  }
+
+  eleveAnnee.I = malloc(sizeof(unsigned int)*nbrELeveAnnee);
+  eleveAnnee.X = malloc(sizeof(int) *nbrELeveAnnee);
+
+  for(size_t i = 0; i < nbrELeveAnnee; i++)
+    eleveAnnee.X[i] = 1;
+
+  eleveAnnee.nbrNonZero = nbrELeveAnnee;
+  eleveAnnee.sommeTot = 0;
+
+  size_t k = 0;
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  //  printf("%u\n", matrice.fichier.matricules[matrice.P[i]] / 10000);
+    if(!((matrice.fichier.matricules[matrice.P[i]]/10000) % annee)){
+      eleveAnnee.I[k] = i;
+      k++;
+    }
+  }
+
+  VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, eleveAnnee);
+
+  for(size_t i = 0; i < resultat.nbrNonZero; i++)
+    printf("%s annee :%d :%d\n", matrice.fichier.coursDif[resultat.I[i]], annee, resultat.X[i]);
+
+  printf("\n%d\n", resultat.sommeTot);
+
+
+  free(resultat.X);
+  free(resultat.I);
+  free(eleveAnnee.I);
+  free(eleveAnnee.X);
+}
+
 void statistique(MATRICE matrice){
   stat_filles_cours(matrice);
+  stat_cours_annee(matrice, 2008);
+
 }
