@@ -17,7 +17,7 @@ struct donnee_t{
 struct matrice_t{
   unsigned int *P; // la n-eme valeurs de la colonne
   unsigned int *I; // Ligne
-  int *X; // valeur de la case
+  unsigned int *X; // valeur de la case
   size_t nz; // nombres d'éléments
 
   DONNEE fichier; // contient les données du fichier
@@ -27,7 +27,7 @@ struct matrice_t{
 
 struct vecteur_t{
   unsigned int *I; // lignes
-  int *X; // valeur de la ligne
+  unsigned int *X; // valeur de la ligne
   unsigned int nbrNonZero; // nombres d'éléménts, donc taille de I
   unsigned int sommeTot; // sommes de tout les éléments
 };

@@ -23,8 +23,24 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
  * valeur       est la valeur à retrouvée
  * ------------------------------------------------------------------------- */
 static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur);
+
+/* ------------------------------------------------------------------------- *
+ * Affiche le nombres de filles de chaques cours
+ *
+ * PARAMETRES
+ * matrice          matrice creuse ligne = cours, colonnes = étudiants
+ * ------------------------------------------------------------------------- */
 static void stat_filles_cours(MATRICE matrice);
+
+/* ------------------------------------------------------------------------- *
+ * Affiche le nombres d'eleve de l'annee donnée pour chaque cours
+ *
+ * PARAMETRES
+ * matrice          matrice creuse ligne = cours, colonnes = étudiants
+ * annee            annee des etudiants
+ * ------------------------------------------------------------------------- */
 static void stat_cours_annee(MATRICE matrice, unsigned int annee);
+
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 
   char ligne[MAX_LIGNES+1];
@@ -65,7 +81,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
 }
 
 static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur){
-  while (debut <= tailleTab) {
+  while (debut <= tailleTab) { // O(logn)
       int curseur = debut + (tailleTab - debut) / 2;
 
       // Si la valeur du tableau ou pointe le curseur corresponds bien à la valeur
@@ -149,10 +165,11 @@ MATRICE transposee_matrice(MATRICE matrice){
   unsigned int *rowcount = calloc(matrice.nz, sizeof(unsigned int)); // nombres d'éléments dans chaque colonnes, chaque case correspond a un colonne
 
   matriceT.nz = matrice.nz; // meme nombres d'éléments
-  matriceT.fichier = matrice.fichier; // données du fichier
-  matriceT.X = malloc(sizeof(int)*matrice.nz); //A changer avec comme A.I
+  matriceT.fichier = matrice.fichier; // meme données du fichier
+  matriceT.X = malloc(sizeof(unsigned int)*matrice.nz); // A changer avec comme A.I
 
   matriceT.I = malloc(sizeof(unsigned int)*matriceT.nz);
+
  /* == rowcount == */
   for(size_t k = 0; k < matrice.nz; k++) //calcul le rowcount
     rowcount[matrice.I[k]]++;
@@ -165,34 +182,29 @@ MATRICE transposee_matrice(MATRICE matrice){
   for(size_t i = 1; i < matrice.nz; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1]
     matriceT.P[i] = matriceT.P[i-1] + rowcount[i-1];
  /* == fin matrice.P == */
+
  free(rowcount);
+
  /* == matrice.I == */
+ unsigned int *vecteur = malloc(sizeof(unsigned int)*matrice.nz);
 
- unsigned int lignes[matrice.nz];
- unsigned int lignesPourX[matrice.nz];
-
- for(size_t i = 0; i < matrice.nz; i++){
-  lignes[i] = matrice.I[i];
-  lignesPourX[i] = matrice.I[i];
-  matriceT.X[i] = matrice.X[i];
-}
-
- size_t j = 0;
+ for(size_t i  = 0; i < matriceT.nz; i++)
+  vecteur[i] = matriceT.P[i];
 
  for(size_t i = 0; i < matrice.nbrColonnes-1; i++){
-   for(j = matrice.P[i]; j < matrice.P[i+1]; j++){
-     matriceT.I[j] = i;
-   }
- }
+   for(size_t j = matrice.P[i]; j < matrice.P[i+1]; j++){
+     matriceT.I[vecteur[matrice.I[j]]] = i;
+     matriceT.X[vecteur[matrice.I[j]]] = matrice.X[j];
+     vecteur[matrice.I[j]]++;
+  }
 
- for(; j < matrice.nz; j++){
-     matriceT.I[j] = matrice.nbrColonnes-1;
- }
+}
 
- sort(lignes, matriceT.I, matrice.nz);
- sort(lignesPourX, matriceT.X, matrice.nz);
-
-
+  for(size_t j = matrice.P[matrice.nbrColonnes-1]; j < matrice.nz; j++){
+    matriceT.I[vecteur[matrice.I[j]]] = matrice.nbrColonnes-1;
+    matriceT.X[vecteur[matrice.I[j]]] = matrice.X[j];
+    vecteur[matrice.I[j]]++;
+  }
  /* == fin matrice.I == */
 
   matriceT.nbrLignes = matrice.nbrColonnes; //on inverse le nombres de lignes et colonnes car transposée
@@ -252,7 +264,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   /* Création z.I contenant les lignes non-zero du vecteur et z.X contenant le contenu de ces lignes */
   z.I = malloc(sizeof(unsigned int)*lignesDif);
-  z.X = calloc(lignesDif, sizeof(int));
+  z.X = calloc(lignesDif, sizeof(unsigned int));
 
   z.I[0] = tab[0];
   k = 0;
@@ -304,7 +316,7 @@ static void stat_filles_cours(MATRICE matrice){
   }
 
   filles.I = malloc(sizeof(unsigned int) *nbrFilles);
-  filles.X = malloc(nbrFilles *sizeof(int));
+  filles.X = malloc(nbrFilles *sizeof(unsigned int));
 
   for(size_t i = 0; i < nbrFilles; i++)
     filles.X[i] = 1;
@@ -349,7 +361,7 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
   }
 
   eleveAnnee.I = malloc(sizeof(unsigned int)*nbrELeveAnnee);
-  eleveAnnee.X = malloc(sizeof(int) *nbrELeveAnnee);
+  eleveAnnee.X = malloc(sizeof(unsigned int) *nbrELeveAnnee);
 
   for(size_t i = 0; i < nbrELeveAnnee; i++)
     eleveAnnee.X[i] = 1;

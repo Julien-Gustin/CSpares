@@ -8,44 +8,20 @@
 int main(){
 
   char input[] = "cursusAnonyme.csv";
-  clock_t t1, t2, t3, t4;
-  float temps, temps2;
+  clock_t t1, t2, t3, t4, t5, t6;
+  float temps, temps2, temps3;
 
   t1 = clock();
   MATRICE matrice = fichier_en_matrice(input); // O(n log n) n = nbr lignes
   t2 = clock();
 
-
-  // matrice.P = malloc(sizeof(unsigned int)*3);
-  // matrice.P[0] = 0;
-  // matrice.P[1] = 2;
-  // matrice.P[2] = 4;
-  //
-  // matrice.I = malloc(sizeof(unsigned int)*5);
-  // matrice.I[0] = 0;
-  // matrice.I[1] = 4;
-  // matrice.I[2] = 1;
-  // matrice.I[3] = 4;
-  // matrice.I[4] = 2;
-  //
-  // matrice.X = malloc(sizeof(unsigned int)*5);
-  // matrice.X[0] = 1;
-  // matrice.X[1] = 1;
-  // matrice.X[2] = 1;
-  // matrice.X[3] = 1;
-  // matrice.X[4] = 1;
-  //
-  // matrice.nbrColonnes = 3;
-  // matrice.nz = 5;
-  // matrice.nbrLignes = 5;
   t3 = clock();
-    statistique(matrice);
   MATRICE matriceT = transposee_matrice(transposee_matrice(matrice)); // O(n) n = nombres d'éléments
-  statistique(matriceT);
-  // for(size_t i = 0; i < matriceT.nz; i++){
-  //    printf(".%d %d\n", matriceT.P[i], matrice.P[i]);
-  //  }
   t4 = clock();
+
+  t5 = clock();
+  statistique(matrice);
+  t6 = clock();
 
 
 
@@ -147,7 +123,8 @@ int main(){
 
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
   temps2 = (float)(t4-t3)/CLOCKS_PER_SEC;
-  printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n", temps, temps2);
+  temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
+  printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n| durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
 /*
   free(matrice.fichier.matricules);
   free(matrice.fichier.cours);
