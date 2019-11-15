@@ -128,7 +128,7 @@ MATRICE fichier_en_matrice(char* input){
 
   MATRICE matrice; // matrice creuse sous formes de structures de données
 
-  fichier_en_memoire(fp, &matrice); // O(2n)
+  fichier_en_memoire(fp, &matrice); // O(2n), n = nbr Lignes du fichier
 
   sort_string(matrice.fichier.matricules, matrice.fichier.cours, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
 
@@ -202,7 +202,7 @@ MATRICE transposee_matrice(MATRICE matrice){
     return matriceT;
 
  /* == rowcount == */
-  for(size_t k = 0; k < matrice.nz; k++) //calcul le rowcount
+  for(size_t k = 0; k < matrice.nz; k++) //calcul le rowcount, O(n)
     rowcount[matrice.I[k]]++;
  /* == fin rowcount == */
 
@@ -442,7 +442,7 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
 }
 
 void statistique(MATRICE matrice){
-  stat_filles_cours(matrice);
-  stat_cours_annee(matrice, 2008);
+  stat_filles_cours(matrice); // O(2n) , n = nbrColonnes + O(4n), O(n log n)
+  stat_cours_annee(matrice, 2008); // O(2n) , n = nbrColonnes  + O(4n), O(n log n)
 
 }

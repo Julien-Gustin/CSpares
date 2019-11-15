@@ -42,7 +42,7 @@ struct vecteur_t{
  * RETURN
  * matrice creuse
  * ------------------------------------------------------------------------- */
-MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
+MATRICE fichier_en_matrice(char* input); // O(2n) + O(2m(log(m)) + O(3m), n = nombres lignes et m = non zero
 
 /* ------------------------------------------------------------------------- *
  * Transpose la matrice données en argument ( structure )
@@ -53,7 +53,7 @@ MATRICE fichier_en_matrice(char* input); // O(4n) + O(2n(log(n))
  * RETURN
  * matrice creuse
  * ------------------------------------------------------------------------- */
-MATRICE transposee_matrice(MATRICE matrice);
+MATRICE transposee_matrice(MATRICE matrice); // O(4m)
 
 /* ------------------------------------------------------------------------- *
  * Multiplie une matrice creuse avec un vecteur creux et renvois cette multiplication
@@ -65,11 +65,37 @@ MATRICE transposee_matrice(MATRICE matrice);
  * RETURN
  * vecteur creux
  * ------------------------------------------------------------------------- */
-VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur);
+VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur); // O(4n), O(n log n)
 
+/* ------------------------------------------------------------------------- *
+ * libere le contenu d'une matrice
+ *
+ * PARAMETRES
+ * matrice        pointeur vers une matrice creuse en structure
+ * ------------------------------------------------------------------------- */
 void destroy_matrice(MATRICE *matrice);
+
+/* ------------------------------------------------------------------------- *
+ * libere le contenu d'un vecteur
+ *
+ * PARAMETRES
+ * vecteur        pointeur vers un vecteur creux en structure
+ * ------------------------------------------------------------------------- */
 void destroy_vecteur(VECTEUR *vecteur);
+
+/* ------------------------------------------------------------------------- *
+ * libere le contenu d'un fichier stockée en mémoire
+ *
+ * PARAMETRES
+ * matrice        pointeur vers une matrice creuse en structure
+ * ------------------------------------------------------------------------- */
 void destroy_fichier(MATRICE *matrice);
 
-void statistique(MATRICE matrice);
+/* ------------------------------------------------------------------------- *
+ * Affiche diverse statistique comme le nombres de filles dans un cours etc...
+ *
+ * PARAMETRES
+ * matrice        matrice creuse en structure
+ * ------------------------------------------------------------------------- */
+void statistique(MATRICE matrice);  // 2*(O(2n) , n = nbrColonnes + O(4n), O(n log n))
 #endif
