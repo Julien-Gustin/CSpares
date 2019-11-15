@@ -227,13 +227,12 @@ if(vecteur == NULL)
  for(size_t i  = 0; i < matriceT.nz; i++)
   vecteur[i] = matriceT.P[i];
 
- for(size_t i = 0; i < matrice.nbrColonnes-1; i++){
+ for(size_t i = 0; i < matrice.nbrColonnes-1; i++){ // remplis matrice.I
    for(size_t j = matrice.P[i]; j < matrice.P[i+1]; j++){
      matriceT.I[vecteur[matrice.I[j]]] = i;
      matriceT.X[vecteur[matrice.I[j]]] = matrice.X[j];
      vecteur[matrice.I[j]]++;
   }
-
 }
 
   for(size_t j = matrice.P[matrice.nbrColonnes-1]; j < matrice.nz; j++){
