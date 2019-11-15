@@ -67,5 +67,9 @@ MATRICE transposee_matrice(MATRICE matrice);
  * ------------------------------------------------------------------------- */
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur);
 
+void destroy_matrice(MATRICE *matrice);
+void destroy_vecteur(VECTEUR *vecteur);
+void destroy_fichier(MATRICE *matrice);
+
 void statistique(MATRICE matrice);
 #endif

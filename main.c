@@ -16,7 +16,7 @@ int main(){
   t2 = clock();
 
   t3 = clock();
-  MATRICE matriceT = transposee_matrice(transposee_matrice(matrice)); // O(n) n = nombres d'éléments
+  MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
   t4 = clock();
 
   t5 = clock();
@@ -125,6 +125,10 @@ int main(){
   temps2 = (float)(t4-t3)/CLOCKS_PER_SEC;
   temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
   printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n| durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
+
+  destroy_matrice(&matrice);
+  destroy_fichier(&matrice);
+  destroy_matrice(&matriceT);
 /*
   free(matrice.fichier.matricules);
   free(matrice.fichier.cours);
