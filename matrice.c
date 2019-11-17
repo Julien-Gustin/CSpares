@@ -14,17 +14,6 @@
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
 
 /* ------------------------------------------------------------------------- *
- * Fait une recercheche dichotomique pour trouver l'indice du tableau correspondant à la valeur recherchée
- *
- * PARAMETRES
- * tab          tableau d'entier positif triée
- * debut        debut intervalle de recherche
- * tailleTab    fin intervalle de recherche
- * valeur       est la valeur à retrouvée
- * ------------------------------------------------------------------------- */
-static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur);
-
-/* ------------------------------------------------------------------------- *
  * Affiche le nombres de filles de chaques cours
  *
  * PARAMETRES
@@ -98,27 +87,6 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
     matrice->fichier.cours = cours;
     matrice->nz = nbrLignes;
 }
-
-static unsigned int recherche_indice_dichotomique(unsigned int *tab, unsigned int debut, unsigned int tailleTab, unsigned int valeur){
-  while (debut <= tailleTab) { // O(logn)
-      int curseur = debut + (tailleTab - debut) / 2;
-
-      // Si la valeur du tableau ou pointe le curseur corresponds bien à la valeur
-      if (tab[curseur] == valeur)
-          return curseur;
-
-      // Si la valeur est trop grande, on ignore la moitier gauche restante du tab
-      if (tab[curseur] < valeur)
-          debut = curseur + 1;
-
-      // si la valeur est trop grande on igore la moitier droite du tab
-      else
-          tailleTab = curseur - 1;
-  }
-
-  return -1; // element pas présent
-}
-
 
 MATRICE fichier_en_matrice(char* input){
   FILE *fp = fopen(input, "r");
@@ -249,104 +217,11 @@ if(vecteur == NULL)
   return matriceT;
 }
 
-// VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-//   // élément non nuls de B = nbrNonZero
-//   VECTEUR z;
-//   size_t k = 0;
-//   unsigned int nombreLignes = 0;
-//   unsigned int lignesDif = 1;
-//
-//   //O(n) , n  = nombres de lignes
-//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
-//     if(vecteur.I[i] < matrice.nbrColonnes-1){
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++)
-//         nombreLignes++; // pour matrice
-//     }
-//     else{
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++)
-//         nombreLignes++; // pour matrice
-//     }
-//   }
-//
-//   unsigned int *tab = malloc(sizeof(unsigned int) *nombreLignes); //tableau contenant toutes les ligne matrice U vecteur
-//   if(tab == NULL)
-//     return vecteur;
-//
-//   // O(n)
-//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ //Comptes le nombres de lignes ( en tout ) union vecteur et colonne correspondant aux vecteurs
-//
-//     if(vecteur.I[i] < matrice.nbrColonnes-1){
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
-//         tab[k] = matrice.I[j];
-//         k++; // pour matrice
-//       }
-//     }
-//     else{
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){ // dernier élément de matrice.P ne correponds pas à nz
-//         tab[k] = matrice.I[j];
-//         k++;
-//       }
-//     }
-//   }
-//
-//   quickSort(tab, nombreLignes); // trie le tab  O(nlogn)
-//
-//   //O(n)
-//   for(size_t i = 1; i < nombreLignes; i++){ // compte le nombres de lignes différentes
-//     if(tab[i-1] != tab[i])
-//       lignesDif++;
-//   }
-//
-//   z.nbrNonZero = lignesDif;
-//   z.sommeTot = 0;
-//
-//    //Création z.I contenant les lignes non-zero du vecteur et z.X contenant le contenu de ces lignes
-//   z.I = malloc(sizeof(unsigned int)*lignesDif);
-//   if(z.I == NULL)
-//     return z;
-//
-//   z.X = calloc(lignesDif, sizeof(unsigned int));
-//   if(z.X == NULL)
-//     return z;
-//
-//   z.I[0] = tab[0];
-//   k = 0;
-//
-//   // O(n)
-//   for(size_t i = 1; i < nombreLignes; i++){ //remplis z.I de lignes différentes
-//     if(tab[i-1] != tab[i]){
-//       k++;
-//       z.I[k] = tab[i];
-//     }
-//   }
-//
-//   //O(n)* O(nlogn)
-//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // trouve les composantes de z.X
-//         //  printf("%d : %d, %d\n", i, vecteur.I[i], matrice.nbrColonnes-1);
-//     if(vecteur.I[i] < matrice.nbrColonnes-1 ){ // nous ne sommes pas à la derniere colonnes de matrice.P
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1];j++){
-//         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
-//         z.sommeTot += matrice.X[j] * vecteur.X[i];
-//       }
-//     }
-//     else{ // nous sommes à la dernière colonnes de matrice.P donc on va jusque nz
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz;j++){
-//         z.X[recherche_indice_dichotomique(z.I, 0, z.nbrNonZero, matrice.I[j])] += matrice.X[j] * vecteur.X[i];
-//         z.sommeTot += matrice.X[j] * vecteur.X[i];
-//       }
-//     }
-//   }
-//
-// free(tab);
-// return z;
-//
-// }
-
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-  unsigned int *X = calloc(matrice.nbrColonnes, sizeof(unsigned int));
+  unsigned int *X = calloc(matrice.nbrColonnes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
   VECTEUR z;
 
-  for(size_t i = 0; i < vecteur.nbrNonZero; i++){
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
     if(vecteur.I[i] < matrice.nbrColonnes-1){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
@@ -360,7 +235,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   size_t k = 0; // compteur;
 
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){ // k = nombres de non zero
     if(X[i] != 0){
       k++;
     }
@@ -384,6 +259,60 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   return z;
 
 }
+
+// VECTEUR produit_matrice_creuses(MATRICE A, MATRICE B){
+//   unsigned int *X = calloc(A.nbrColonnes, sizeof(unsigned int));
+//   MATRICE C;
+//
+//   size_t indice = 0;
+//   for(size_t i = 0; i < B.nbrColonnes-1; i++){
+//     for(size_t j = B.P[i]; j < B.P[i+1]){
+//       for(size_t k = A.P[B.I[i]]; k < A.P[B.I[i]+1]; k++)
+//         X[A.I[k]] += B.X[i] * A.X[k];
+//
+//     }
+//
+//     for(size_t l = 0; l )
+//   }
+//
+//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){
+//     if(vecteur.I[i] < matrice.nbrColonnes-1){
+//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
+//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
+//     }
+//
+//     else{
+//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
+//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
+//     }
+//   }
+//
+//   size_t k = 0; // compteur;
+//
+//   for(size_t i = 0; i < matrice.nbrColonnes; i++){
+//     if(X[i] != 0){
+//       k++;
+//     }
+//   }
+//
+//   z.I = malloc(sizeof(unsigned int)*k);
+//   z.X = malloc(sizeof(unsigned int)*k);
+//
+//   k = 0;
+//
+//   for(size_t i = 0; i < matrice.nbrColonnes; i++){
+//     if(X[i] != 0){
+//       z.I[k] = i;
+//       z.X[k] = X[i];
+//       k++;
+//     }
+//   }
+//
+//   free(X);
+//   z.nbrNonZero = k;
+//   return z;
+//
+// }
 
 
 static void stat_filles_cours(MATRICE matrice){
