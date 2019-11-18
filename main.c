@@ -118,7 +118,7 @@ int main(){
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
   temps2 = (float)(t4-t3)/CLOCKS_PER_SEC;
   temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
-  printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n| durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
+  printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n | durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
 
   destroy_matrice(&matrice);
   destroy_fichier(&matrice);
