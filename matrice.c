@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include "matrice.h"
 #include "Sort.h"
+#include "produit.h"
 /* ------------------------------------------------------------------------- *
  * Stockes tout les matricules, cours et le nombres de lignes du fichier en mémoire
  *
@@ -218,7 +219,7 @@ if(vecteur == NULL)
 }
 
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-  unsigned int *X = calloc(matrice.nbrColonnes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
+  unsigned int *X = calloc(matrice.nbrLignes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
   VECTEUR z;
 
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
@@ -235,10 +236,10 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   size_t k = 0; // compteur;
 
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){ // k = nombres de non zero
-    if(X[i] != 0){
+  for(size_t i = 0; i < matrice.nbrLignes; i++){ // k = nombres de non zero
+    if(X[i] != 0)
       k++;
-    }
+
   }
 
   z.I = malloc(sizeof(unsigned int)*k);
@@ -246,7 +247,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
 
   k = 0;
 
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  for(size_t i = 0; i < matrice.nbrLignes; i++){
     if(X[i] != 0){
       z.I[k] = i;
       z.X[k] = X[i];
@@ -357,7 +358,7 @@ static void stat_filles_cours(MATRICE matrice){
 
   VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, filles);
 
-  for(size_t i = 0; i < resultat.nbrNonZero; i++)
+  for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
     printf("%s filles :%d\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);
 
   destroy_vecteur(&resultat);
@@ -405,7 +406,7 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
 
   VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, eleveAnnee);
 
-  for(size_t i = 0; i < resultat.nbrNonZero; i++)
+  for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
     printf("%s annee :%d :%d\n", matrice.fichier.coursDif[resultat.I[i]], annee, resultat.X[i]);
 
   destroy_vecteur(&resultat);
