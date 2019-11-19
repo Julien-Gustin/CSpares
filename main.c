@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 #include "matrice.h"
 #include "produit.h"
 
@@ -14,21 +15,25 @@ int main(){
   t1 = clock();
   MATRICE matrice = fichier_en_matrice(input); // O(n log n) n = nbr lignes
   t2 = clock();
+  MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
 
   t3 = clock();
-  MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
+  //statistique(matrice);
   t4 = clock();
 
   t5 = clock();
-  statistique(matrice);
+  //MATRICE c = produit_matrice_creuses(&matrice, &matriceT);
+  etudiant_commun_cours(matrice, matriceT);
+  cours_commun_etudiant(matrice, matriceT);
   t6 = clock();
+
 
   /*------------------------------------------------------------------*/
   /* Points 7 */
   // MATRICE *a = malloc(sizeof(MATRICE));
   // a->P = malloc(sizeof(unsigned)*4);
-  // a->I = malloc(sizeof(unsigned)*7);
-  // a->X = malloc(sizeof(unsigned)*7);
+  // a->I = malloc(sizeof(unsigned)*8);
+  // a->X = malloc(sizeof(unsigned)*8);
   //
   // a->P[0]= 0;
   // a->P[1]= 2;
@@ -44,8 +49,16 @@ int main(){
   // a->I[6]= 2;
   // a->I[7]= 3;
   //
-  // a->nz = 8;
+  // a->X[0]= 1;
+  // a->X[1]= 3;
+  // a->X[2]= 2;
+  // a->X[3]= 1;
+  // a->X[4]= 1;
+  // a->X[5]= 2;
+  // a->X[6]= 4;
+  // a->X[7]= 3;
   //
+  // a->nz = 8;
   // a->nbrColonnes = 4;
   // a->nbrLignes = 4;
   //
@@ -62,23 +75,24 @@ int main(){
   // b->I[2]= 1;
   // b->I[3]= 3;
   //
+  // b->X[0]= 1;
+  // b->X[1]= 2;
+  // b->X[2]= 3;
+  // b->X[3]= 4;
+  //
+  //
   // b->nz = 4;
   // b->nbrColonnes = 2;
   // b->nbrLignes = 4;
   //
-  // ELEMENTS *s = produit_matrice(a, b);
-  // // ELEMENTS *s = NULL ;
-  // // ajouter_element(s, cree_element(15, 5));
+  // MATRICE c = produit_matrice_creuses(a, b);
   //
-  // /* Passe la sentinelle */
-  // s = s->next;
-  // while(s) {
-  //     printf("ligneB %u  ColloneA %u\n", s->ligne, s->colonne);
-  //     s = s->next;
-  //  }
+  // for(size_t i = 0; i < c.nz; i++){
+  //   printf("i: %d x: %d\n", c.I[i], c.X[i]);
+  // }
   //
-  //
-  //
+  // for(size_t i = 0; i < c.nbrColonnes; i++)
+  //   printf("p: %d\n", c.P[i]);
   //
   //
   // free(b);

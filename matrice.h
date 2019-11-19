@@ -66,7 +66,9 @@ MATRICE transposee_matrice(MATRICE matrice); // O(4m)
  * vecteur creux
  * ------------------------------------------------------------------------- */
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur); // O(4n), O(n log n)
-
+MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b);
+void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT);
+void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT);
 /* ------------------------------------------------------------------------- *
  * libere le contenu d'une matrice
  *
