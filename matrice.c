@@ -219,9 +219,54 @@ if(vecteur == NULL)
   return matriceT;
 }
 
+// VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
+//   unsigned int *X = calloc(matrice.nbrLignes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
+//   VECTEUR z;
+//   z.sommeTot = 0;
+//
+//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
+//     if(vecteur.I[i] < matrice.nbrColonnes-1){
+//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
+//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
+//     }
+//
+//     else{
+//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
+//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
+//     }
+//   }
+//
+//   size_t k = 0; // compteur;
+//
+//   for(size_t i = 0; i < matrice.nbrLignes; i++){ // k = nombres de non zero
+//     if(X[i] != 0)
+//       k++;
+//
+//   }
+//
+//   z.I = malloc(sizeof(unsigned int)*k);
+//   z.X = malloc(sizeof(unsigned int)*k);
+//
+//   k = 0;
+//
+//   for(size_t i = 0; i < matrice.nbrLignes; i++){
+//     if(X[i] != 0){
+//       z.I[k] = i;
+//       z.X[k] = X[i];
+//       z.sommeTot += X[i];
+//       k++;
+//     }
+//   }
+//
+//   free(X);
+//   z.nbrNonZero = k;
+//   return z;
+//
+// }
 VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-  unsigned int *X = calloc(matrice.nbrLignes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
+  unsigned int *X = vecteur.Xtmp; //contiendra les valeurs des éléments à leurs lignes respectives
   VECTEUR z;
+  z.sommeTot = 0;
 
   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
     if(vecteur.I[i] < matrice.nbrColonnes-1){
@@ -252,11 +297,12 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
     if(X[i] != 0){
       z.I[k] = i;
       z.X[k] = X[i];
+      z.sommeTot += X[i];
+      X[i] = 0;
       k++;
     }
   }
 
-  free(X);
   z.nbrNonZero = k;
   return z;
 
@@ -271,13 +317,16 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
   c.nbrLignes = a->nbrLignes;
   c.nbrColonnes = b->nbrColonnes;
 
+
   c.I = malloc(sizeof(unsigned int)*a->nbrLignes*b->nbrColonnes); //longueur max de C.I
   c.X = malloc(sizeof(unsigned int)*a->nbrLignes*b->nbrColonnes); //longueur max de C.X
   c.P = malloc(sizeof(unsigned int)*b->nbrColonnes);
 
   c.P[0] = 0;
   vecteur.I = malloc(sizeof(unsigned int)* b->nbrLignes); // C aura le meme nombres de lignes que A
-  vecteur.X = calloc(b->nbrLignes, sizeof(unsigned int));
+  vecteur.X = malloc(b->nbrLignes*sizeof(unsigned int));
+
+  vecteur.Xtmp = calloc(a->nbrLignes, sizeof(unsigned int));
 
   for(size_t i = 0; i < b->nbrColonnes; i++){
     if(i != b->nbrColonnes-1) // jusque derniere colonnes car apres la derniere colonne il y a nz
@@ -309,9 +358,9 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
 
   }
 
-
     free(vecteur.X);
     free(vecteur.I);
+    free(vecteur.Xtmp);
 return c;
 
 }
@@ -345,6 +394,8 @@ static void stat_filles_cours(MATRICE matrice){
 
   filles.nbrNonZero = nbrFilles;
   filles.sommeTot = 0;
+  filles.Xtmp = calloc(matrice.nbrLignes, sizeof(unsigned int));
+
 
   size_t k = 0;
 
@@ -394,6 +445,7 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
 
   eleveAnnee.nbrNonZero = nbrELeveAnnee;
   eleveAnnee.sommeTot = 0;
+  eleveAnnee.Xtmp = calloc(matrice.nbrLignes, sizeof(unsigned int));
 
   size_t k = 0;
   for(size_t i = 0; i < matrice.nbrColonnes; i++){
@@ -425,13 +477,13 @@ void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT){
   for(size_t i = 0; i < resultat.nbrColonnes; i++){
     if(i != resultat.nbrColonnes-1){
       for(size_t j = resultat.P[i]; j < resultat.P[i+1]; j++){
-      //  if(resultat.I[j] < i)
+        if(resultat.I[j] != i)
           printf("étudiants %u à %u cours en commun avec %u\n", matrice.fichier.matricules[matrice.P[i]], resultat.X[j], resultat.fichier.matricules[matrice.P[resultat.I[j]]]);
       }
   }
     else{
       for(size_t j = resultat.P[i]; j < resultat.nz; j++){
-        //if(resultat.I[j] < i)
+        if(resultat.I[j] != i)
           printf("étudiants %u à %u cours en commun avec %u\n", matrice.fichier.matricules[matrice.P[i]], resultat.X[j], resultat.fichier.matricules[matrice.P[resultat.I[j]]]);
       }
     }

@@ -8,13 +8,13 @@
 
 # Tools & flags
 CC=gcc
-CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3 -g
+CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3
 LD=gcc
 
 # Files
 EXEC_WILCOXON=main
 MODULES_WILCOXON=main.c matrice.c MergeSort.c produit.c
-OBJECTS_WILCOXON=main.o matrice.o MergeSort.o produit.o 
+OBJECTS_WILCOXON=main.o matrice.o MergeSort.o produit.o
 
 
 EXEC_ALL=main
