@@ -30,6 +30,8 @@ struct vecteur_t{
   unsigned int *X; // valeur de la ligne
   unsigned int nbrNonZero; // nombres d'éléménts, donc taille de I
   unsigned int sommeTot; // sommes de tout les éléments
+
+  unsigned int *Xtmp;
 };
 
 
