@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
 #include "produit.h"
 
 
@@ -66,15 +66,17 @@ void ajouter_element(ELEMENTS *s, ELEMENTS *f) {
 
 
 
-int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N) {
+int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N, double *sommeTot) {
    assert(s && v);
 
+   *sommeTot = 0;
    /* N est la taille de V */
    if(N != s->nbrColonnes) {
       fprintf(stderr, "La matrice et ce vecteur ne peuvent être "
       "multiplier.\n");
       return NULL;
    }
+
 
    /* Alloue le tableau Z donc le resultats */
    /* On sait que nbreligne de V = nbre Colonne de s = taille Z*/
@@ -105,6 +107,8 @@ int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N) {
       for(; j < nbreElements; ++j) {
          z[s->I[j]] += s->X[j] * v[k]; // Multiplications des composantes
       }
+      (*sommeTot) += z[i]* z[i];
+
       ++k; // Car sa veut dire qu'on change de colone dans A.x[]
    }
 
@@ -112,121 +116,57 @@ int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N) {
 
 }
 
+static int sont_different(int *a, int *b, const size_t N) {
+   for(size_t k= 0; k < N; ++k) {
+      if(a[k] != b[k])
+         return 1;
+   }
+   return 0;
+}
+
+
+
 int *valeur_propre(MATRICE *a) {
    /* a-> doit etre carré */
    if(a->nbrLignes != a->nbrColonnes) {
       printf("La valeur propre d'une matrice non carré n'existe pas\n");
       return NULL;
    }
-
+   double norme = 0;
+   double norme0 = 1;
 
    /* 1ier etape initialiser un vecteur random  O(n) */
-   VECTEUR *v = malloc(sizeof(VECTEUR));
-   if(!v)
-      return NULL;
-   v->I = malloc(sizeof(int));
-   v->X = malloc(sizeof(int));
+   int *v = malloc(sizeof(int)*a->nbrLignes);
+   int *v0 = NULL;
+
+   srand(time(NULL));
+
+   for(size_t k = 0; k < a->nbrLignes; ++k)
+      v[k] = rand();
 
 
 
+   while(norme != norme0 || sont_different(v, v0, a->nbrLignes)) {
+      v0 = v;
+      norme0 = norme;
+      v = matrice_vecteurs_dense(a, v, a->nbrLignes, &norme);
 
-   /* Simmule le vecteur 1 0 0 */
-   v->I[0] = 0;
-   v->X[0] = 1;
-   v->nbrNonZero = 1;
-   v->sommeTot = 1;
+      // for(size_t k = 0; k < a->nbrLignes; ++k)
+      //    printf("%d ",v[k]);
+      // printf("\n\n");
 
-   /* 2ieme étape, la mutliplication */
-   for(size_t k = 1; k <= 5; ++k) {
-      *v = mult_matrice_vecteurs_creux(*a, *v);
-      printf("Somme elements = %u\n", v->sommeTot);
-   }
+      norme = sqrt(norme);
 
+      // printf("%lf\n", norme);
 
+      for(size_t k = 0; k < a->nbrLignes; ++k){
+         v[k] = ceil((float) v[k] / norme);
+      }
+      // free(v0);
+      }
 
-   return NULL;
+      // for(size_t k = 0; k < a->nbrLignes; ++k)
+      //    printf("%d ",v[k]);
+      // printf("\n\n");
+
 }
-  /* Points 8 */
-// 
-//   MATRICE *a = malloc(sizeof(MATRICE));
-//   if(!a)
-//    return 1;
-//
-//    a->P = malloc(sizeof(int)*3);
-//    a->I =  malloc(sizeof(int)*9);
-//    a->X =  malloc(sizeof(int)*9);
-//
-//    a->nz = 9;
-//
-//    a->P[0] = 0;
-//    a->P[1] = 3;
-//    a->P[2] = 6;
-//
-//    a->I[0] = 0;
-//    a->I[1] = 1;
-//    a->I[2] = 2;
-//    a->I[3] = 0;
-//    a->I[4] = 1;
-//    a->I[5] = 2;
-//    a->I[6] = 0;
-//    a->I[7] = 1;
-//    a->I[8] = 2;
-//
-//    a->X[0] = 4;
-//    a->X[1] = 2;
-//    a->X[2] = 2;
-//    a->X[3] = 3;
-//    a->X[4] = 4;
-//    a->X[5] = 3;
-//    a->X[6] = -3;
-//    a->X[7] = -2;
-//    a->X[8] = -1;
-//
-//
-//   a = valeur_propre(a);
-//
-//
-//   return 0;
-//
-//
-// /* Points 8 */
-//
-// MATRICE *a = malloc(sizeof(MATRICE));
-// if(!a)
-//  return 1;
-//
-//  a->P = malloc(sizeof(int)*3);
-//  a->I =  malloc(sizeof(int)*9);
-//  a->X =  malloc(sizeof(int)*9);
-//
-//  a->nz = 9;
-//
-//  a->P[0] = 0;
-//  a->P[1] = 3;
-//  a->P[2] = 6;
-//
-//  a->I[0] = 0;
-//  a->I[1] = 1;
-//  a->I[2] = 2;
-//  a->I[3] = 0;
-//  a->I[4] = 1;
-//  a->I[5] = 2;
-//  a->I[6] = 0;
-//  a->I[7] = 1;
-//  a->I[8] = 2;
-//
-//  a->X[0] = 4;
-//  a->X[1] = 2;
-//  a->X[2] = 2;
-//  a->X[3] = 3;
-//  a->X[4] = 4;
-//  a->X[5] = 3;
-//  a->X[6] = -3;
-//  a->X[7] = -2;
-//  a->X[8] = -1;
-//
-//
-// a = valeur_propre(a);
-//
-//
-// return 0;

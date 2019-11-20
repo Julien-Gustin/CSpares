@@ -9,6 +9,7 @@
 # Tools & flags
 CC=gcc
 CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3
+LDFLAGS =  -lm
 LD=gcc
 
 # Files
@@ -24,7 +25,7 @@ EXEC_ALL=main
 ############# WILCOXON #############
 
 main: $(OBJECTS_WILCOXON)
-	$(LD) -o $(EXEC_WILCOXON) $(OBJECTS_WILCOXON)
+	$(LD) -o $(EXEC_WILCOXON) $(OBJECTS_WILCOXON)  $(LDFLAGS)
 
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS)

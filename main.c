@@ -9,7 +9,7 @@
 int main(){
 
   char input[] = "cursusAnonyme.csv";
-  clock_t t1, t2, t3, t4, t5, t6;
+  clock_t t1, t2, t3, t4, t5, t6, t7, t8;
   float temps, temps2, temps3;
 
   t1 = clock();
@@ -30,73 +30,73 @@ int main(){
 
   /*------------------------------------------------------------------*/
   /* Points 7 */
-  MATRICE *a = malloc(sizeof(MATRICE));
-  a->P = malloc(sizeof(unsigned)*4);
-  a->I = malloc(sizeof(unsigned)*8);
-  a->X = malloc(sizeof(unsigned)*8);
-
-  a->P[0]= 0;
-  a->P[1]= 2;
-  a->P[2]= 5;
-  a->P[3]= 6;
-
-  a->I[0]= 0;
-  a->I[1]= 2;
-  a->I[2]= 0;
-  a->I[3]= 1;
-  a->I[4]= 3;
-  a->I[5]= 0;
-  a->I[6]= 2;
-  a->I[7]= 3;
-
-  a->X[0]= 1;
-  a->X[1]= 3;
-  a->X[2]= 2;
-  a->X[3]= 1;
-  a->X[4]= 1;
-  a->X[5]= 2;
-  a->X[6]= 4;
-  a->X[7]= 3;
-
-  a->nz = 8;
-  a->nbrColonnes = 4;
-  a->nbrLignes = 4;
-
-  MATRICE *b = malloc(sizeof(MATRICE));
-  b->P = malloc(sizeof(unsigned)*2);
-  b->I = malloc(sizeof(unsigned)*4);
-  b->X = malloc(sizeof(unsigned)*4);
-
-  b->P[0]= 0;
-  b->P[1]= 2;
-
-  b->I[0]= 0;
-  b->I[1]= 2;
-  b->I[2]= 1;
-  b->I[3]= 3;
-
-  b->X[0]= 1;
-  b->X[1]= 2;
-  b->X[2]= 3;
-  b->X[3]= 4;
-
-
-  b->nz = 4;
-  b->nbrColonnes = 2;
-  b->nbrLignes = 4;
-
-  MATRICE c = produit_matrice_creuses(a, b);
-
-  for(size_t i = 0; i < c.nz; i++){
-    printf("i: %d x: %d\n", c.I[i], c.X[i]);
-  }
-
-  for(size_t i = 0; i < c.nbrColonnes; i++)
-    printf("p: %d\n", c.P[i]);
-
-
-  free(b);
-  free(a);
+  // MATRICE *a = malloc(sizeof(MATRICE));
+  // a->P = malloc(sizeof(unsigned)*4);
+  // a->I = malloc(sizeof(unsigned)*8);
+  // a->X = malloc(sizeof(unsigned)*8);
+  //
+  // a->P[0]= 0;
+  // a->P[1]= 2;
+  // a->P[2]= 5;
+  // a->P[3]= 6;
+  //
+  // a->I[0]= 0;
+  // a->I[1]= 2;
+  // a->I[2]= 0;
+  // a->I[3]= 1;
+  // a->I[4]= 3;
+  // a->I[5]= 0;
+  // a->I[6]= 2;
+  // a->I[7]= 3;
+  //
+  // a->X[0]= 1;
+  // a->X[1]= 3;
+  // a->X[2]= 2;
+  // a->X[3]= 1;
+  // a->X[4]= 1;
+  // a->X[5]= 2;
+  // a->X[6]= 4;
+  // a->X[7]= 3;
+  //
+  // a->nz = 8;
+  // a->nbrColonnes = 4;
+  // a->nbrLignes = 4;
+  //
+  // MATRICE *b = malloc(sizeof(MATRICE));
+  // b->P = malloc(sizeof(unsigned)*2);
+  // b->I = malloc(sizeof(unsigned)*4);
+  // b->X = malloc(sizeof(unsigned)*4);
+  //
+  // b->P[0]= 0;
+  // b->P[1]= 2;
+  //
+  // b->I[0]= 0;
+  // b->I[1]= 2;
+  // b->I[2]= 1;
+  // b->I[3]= 3;
+  //
+  // b->X[0]= 1;
+  // b->X[1]= 2;
+  // b->X[2]= 3;
+  // b->X[3]= 4;
+  //
+  //
+  // b->nz = 4;
+  // b->nbrColonnes = 2;
+  // b->nbrLignes = 4;
+  //
+  // MATRICE c = produit_matrice_creuses(a, b);
+  //
+  // for(size_t i = 0; i < c.nz; i++){
+  //   printf("i: %d x: %d\n", c.I[i], c.X[i]);
+  // }
+  //
+  // for(size_t i = 0; i < c.nbrColonnes; i++)
+  //   printf("p: %d\n", c.P[i]);
+  //
+  //
+  // free(b);
+  // free(a);
 
    /*-----------------------------------------------------------------*/
    /* Points 3 */
@@ -127,15 +127,67 @@ int main(){
 
    /*-----------------------------------------------------------------*/
 
+ /* Points 8 */
+
+   // MATRICE *a = malloc(sizeof(MATRICE));
+   // if(!a)
+   //    return 1;
+   //
+   // a->P = malloc(sizeof(int)*3);
+   // a->I =  malloc(sizeof(int)*9);
+   // a->X =  malloc(sizeof(int)*9);
+   //
+   // a->nz = 9;
+   // a->nbrLignes = 3;
+   // a->nbrColonnes = 3;
+   //
+   //
+   // a->P[0] = 0;
+   // a->P[1] = 3;
+   // a->P[2] = 6;
+   //
+   // a->I[0] = 0;
+   // a->I[1] = 1;
+   // a->I[2] = 2;
+   // a->I[3] = 0;
+   // a->I[4] = 1;
+   // a->I[5] = 2;
+   // a->I[6] = 0;
+   // a->I[7] = 1;
+   // a->I[8] = 2;
+   //
+   // a->X[0] = 4;
+   // a->X[1] = 2;
+   // a->X[2] = 2;
+   // a->X[3] = 3;
+   // a->X[4] = 4;
+   // a->X[5] = 3;
+   // a->X[6] = -3;
+   // a->X[7] = -2;
+   // a->X[8] = -1;
+   //
+   //
+   t7 =  clock();
+   int *v = valeur_propre(&d);
+   t8 = clock();
+   //
+   //
+   // trice(&c);
+
+
+   // return 0;
+
 
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
   temps2 = (float)(t4-t3)/CLOCKS_PER_SEC;
   temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
+  double temps8 = (float)(t8-t7)/CLOCKS_PER_SEC;
   printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n | durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
+  printf(" Durée vecteur propre %f\n", temps8);
 
-  destroy_matrice(&matrice);
-  destroy_fichier(&matrice);
-  destroy_matrice(&c);
-  destroy_matrice(&matriceT);
+  // destroy_matrice(&matrice);
+  // destroy_fichier(&matrice);
+  // destroy_matrice(&c);
+  // destroy_matrice(&matriceT);
 
 }
