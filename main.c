@@ -18,7 +18,7 @@ int main(){
   MATRICE matriceT = transposee_matrice(matrice); // O(n) n = nombres d'éléments
 
   t3 = clock();
-  //statistique(matrice);
+  statistique(matrice);
   t4 = clock();
 
   t5 = clock();
