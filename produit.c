@@ -111,54 +111,122 @@ int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N) {
    return z;
 
 }
-/* A-> premiere && B-> deuxieme */
-/* Le fais que se sont des constantes garantie qu'on ne les modifies pas */
-ELEMENTS *produit_matrice(const MATRICE *A, const MATRICE *B) {
-   assert(A && B);
 
-   /* Testons si A*B est possible */
-   if(A->nbrColonnes != B->nbrLignes) {
-      printf("Multiplication matricielle impossible\n");
+int *valeur_propre(MATRICE *a) {
+   /* a-> doit etre carré */
+   if(a->nbrLignes != a->nbrColonnes) {
+      printf("La valeur propre d'une matrice non carré n'existe pas\n");
       return NULL;
    }
 
-   /* Alloue le resultats dans C */
-   MATRICE *c = malloc(sizeof(MATRICE));
-   if(!c) {
-      fprintf(stderr, "Erreur dans produit matrice\n");
-      exit(EXIT_FAILURE);
-   }
 
-   /* Alloue le nombre de collone*/
-   /* nbreCollone C = nbreCollone B*/
-   c->P = malloc(sizeof(unsigned int)* B->nbrColonnes);
-   if(!c->P) {
-      fprintf(stderr, "Erreur dans produit matrice\n");
-      exit(EXIT_FAILURE);
-   }
-
-   /* 1) trouvons les non nul de c */
-   /* Sentinelle */
-   ELEMENTS *s = malloc(sizeof(ELEMENTS));
-   if(!s)
+   /* 1ier etape initialiser un vecteur random  O(n) */
+   VECTEUR *v = malloc(sizeof(VECTEUR));
+   if(!v)
       return NULL;
-   s->next = NULL;
-   size_t j = 0;
-   size_t nbreElements = 0, nbreElementsA = 0;
-   for(size_t i = 0; i < B->nz; ++i) {
-      if(i < A->nbrColonnes -1)
-         nbreElementsA = A->P[B->I[i]+1] - A->P[B->I[i]] ;
-      else // Derniere collone
-         nbreElementsA = A->nz - A->P[B->I[i]] ;
-
-      for(; j < nbreElementsA; ++j)
-         ajouter_element(s, cree_element(A->I[A->P[B->I[i]]+j], B->I[i]));
-         // Donne la ligne des elements non nul de c
-      j = 0;
+   v->I = malloc(sizeof(int));
+   v->X = malloc(sizeof(int));
 
 
+
+
+   /* Simmule le vecteur 1 0 0 */
+   v->I[0] = 0;
+   v->X[0] = 1;
+   v->nbrNonZero = 1;
+   v->sommeTot = 1;
+
+   /* 2ieme étape, la mutliplication */
+   for(size_t k = 1; k <= 5; ++k) {
+      *v = mult_matrice_vecteurs_creux(*a, *v);
+      printf("Somme elements = %u\n", v->sommeTot);
    }
 
-   return s;
 
+
+   return NULL;
 }
+  /* Points 8 */
+// 
+//   MATRICE *a = malloc(sizeof(MATRICE));
+//   if(!a)
+//    return 1;
+//
+//    a->P = malloc(sizeof(int)*3);
+//    a->I =  malloc(sizeof(int)*9);
+//    a->X =  malloc(sizeof(int)*9);
+//
+//    a->nz = 9;
+//
+//    a->P[0] = 0;
+//    a->P[1] = 3;
+//    a->P[2] = 6;
+//
+//    a->I[0] = 0;
+//    a->I[1] = 1;
+//    a->I[2] = 2;
+//    a->I[3] = 0;
+//    a->I[4] = 1;
+//    a->I[5] = 2;
+//    a->I[6] = 0;
+//    a->I[7] = 1;
+//    a->I[8] = 2;
+//
+//    a->X[0] = 4;
+//    a->X[1] = 2;
+//    a->X[2] = 2;
+//    a->X[3] = 3;
+//    a->X[4] = 4;
+//    a->X[5] = 3;
+//    a->X[6] = -3;
+//    a->X[7] = -2;
+//    a->X[8] = -1;
+//
+//
+//   a = valeur_propre(a);
+//
+//
+//   return 0;
+//
+//
+// /* Points 8 */
+//
+// MATRICE *a = malloc(sizeof(MATRICE));
+// if(!a)
+//  return 1;
+//
+//  a->P = malloc(sizeof(int)*3);
+//  a->I =  malloc(sizeof(int)*9);
+//  a->X =  malloc(sizeof(int)*9);
+//
+//  a->nz = 9;
+//
+//  a->P[0] = 0;
+//  a->P[1] = 3;
+//  a->P[2] = 6;
+//
+//  a->I[0] = 0;
+//  a->I[1] = 1;
+//  a->I[2] = 2;
+//  a->I[3] = 0;
+//  a->I[4] = 1;
+//  a->I[5] = 2;
+//  a->I[6] = 0;
+//  a->I[7] = 1;
+//  a->I[8] = 2;
+//
+//  a->X[0] = 4;
+//  a->X[1] = 2;
+//  a->X[2] = 2;
+//  a->X[3] = 3;
+//  a->X[4] = 4;
+//  a->X[5] = 3;
+//  a->X[6] = -3;
+//  a->X[7] = -2;
+//  a->X[8] = -1;
+//
+//
+// a = valeur_propre(a);
+//
+//
+// return 0;
