@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "produit.h"
+#include <time.h>
 
 
 /* Liste definition */
@@ -168,5 +169,7 @@ int *valeur_propre(MATRICE *a) {
       // for(size_t k = 0; k < a->nbrLignes; ++k)
       //    printf("%d ",v[k]);
       // printf("\n\n");
+
+      return v;
 
 }

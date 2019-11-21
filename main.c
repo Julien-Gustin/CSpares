@@ -169,6 +169,8 @@ int main(){
    //
    t7 =  clock();
    int *v = valeur_propre(&d);
+   if(!v)
+      return 0;
    t8 = clock();
    //
    //
