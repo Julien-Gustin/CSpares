@@ -4,7 +4,7 @@
 
 
 #include "matrice.h"
-#include "produit.h"
+//#include "produit.h"
 
 int main(){
 
@@ -26,6 +26,7 @@ int main(){
   //etudiant_commun_cours(matrice, matriceT);
   //cours_commun_etudiant(matrice, matriceT);
   t6 = clock();
+  printf("%ld\n", d.nz);
 
 
   /*------------------------------------------------------------------*/
@@ -167,9 +168,9 @@ int main(){
    // a->X[8] = -1;
    //
    //
-   t7 =  clock();
-   int *v = valeur_propre(&d);
-   t8 = clock();
+   // t7 =  clock();
+   // int *v = valeur_propre(&d);
+   // t8 = clock();
    //
    //
    // trice(&c);
@@ -181,13 +182,13 @@ int main(){
   temps = (float)(t2-t1)/CLOCKS_PER_SEC;
   temps2 = (float)(t4-t3)/CLOCKS_PER_SEC;
   temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
-  double temps8 = (float)(t8-t7)/CLOCKS_PER_SEC;
+  //double temps8 = (float)(t8-t7)/CLOCKS_PER_SEC;
   printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n | durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
-  printf(" Durée vecteur propre %f\n", temps8);
+//  printf(" Durée vecteur propre %f\n", temps8);
 
-  // destroy_matrice(&matrice);
-  // destroy_fichier(&matrice);
-  // destroy_matrice(&c);
-  // destroy_matrice(&matriceT);
+   destroy_fichier(&matrice);
+   destroy_matrice(&matrice);
+   destroy_matrice(&d);
+   destroy_matrice(&matriceT);
 
 }

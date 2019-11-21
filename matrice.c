@@ -65,7 +65,7 @@ static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
   if(cours == NULL)
     return; //ERREUR ALLOC
 
-  matrice->X = malloc(sizeof(int)*nbrLignes);
+  matrice->X = malloc(sizeof(unsigned int)*nbrLignes);
   if(matrice->X == NULL)
     return; //ERREUR ALLOC
 
@@ -410,7 +410,7 @@ static void stat_filles_cours(MATRICE matrice){
   VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, filles);
 
   for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
-    printf("%s filles :%d\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);
+    printf("%s filles :%u\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);
 
   destroy_vecteur(&resultat);
   destroy_vecteur(&filles);
@@ -458,7 +458,7 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
   VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, eleveAnnee);
 
   for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
-    printf("%s annee :%d :%d\n", matrice.fichier.coursDif[resultat.I[i]], annee, resultat.X[i]);
+    printf("%s annee :%d :%u\n", matrice.fichier.coursDif[resultat.I[i]], annee, resultat.X[i]);
 
   destroy_vecteur(&resultat);
   destroy_vecteur(&eleveAnnee);
