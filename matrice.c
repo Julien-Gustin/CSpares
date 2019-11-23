@@ -465,11 +465,55 @@ static void stat_cours_annee(MATRICE matrice, unsigned int annee){
 
 }
 
-void statistique(MATRICE matrice){
-  stat_filles_cours(matrice); // O(2n) , n = nbrColonnes + O(4n), O(n log n)
-  stat_cours_annee(matrice, 2008); // O(2n) , n = nbrColonnes  + O(4n), O(n log n)
+
+static void statistique_nbrEleveCours(MATRICE* matrice) {
+
+
+   double *vecteur1 = malloc(sizeof(double)* matrice->nbrColonnes);
+   if(!vecteur1) {
+      fprintf(stderr, "Erreur lors de l'allocation!\n");
+      exit(EXIT_FAILURE);
+   }
+
+
+   /* Remplir le vecteur de 1 */
+   for(size_t k = 0; k < matrice->nbrColonnes; ++k)
+      vecteur1[k] = 1;
+
+   // for(size_t k = 0; k < matrice->nbrColonnes; ++k)
+   //    printf("%f\n")
+
+   double *resultat =
+      matrice_vecteurs_dense( matrice, vecteur1, matrice->nbrColonnes);
+   if(!resultat)
+      exit(EXIT_FAILURE);
+
+
+
+   /* Utilisons notre dictionnaire */
+
+
+   printf("Nombre d'étudiants qui suivent le cours de:\n");
+   for(size_t k = 0; k < matrice->nbrLignes; ++k)
+      printf("%s:  %.0f\n", matrice->fichier.coursDif[k], resultat[k]);
+
+   free(vecteur1);
+   free(resultat);
 
 }
+
+
+void statistique(MATRICE *matrice){
+  stat_filles_cours(*matrice); // O(2n) , n = nbrColonnes + O(4n), O(n log n)
+  stat_cours_annee(*matrice, 2008); // O(2n) , n = nbrColonnes  + O(4n), O(n log n)
+  statistique_nbrEleveCours(matrice);
+
+}
+
+
+
+
+
 
 void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT){
   MATRICE resultat = produit_matrice_creuses(&matriceT, &matrice);;

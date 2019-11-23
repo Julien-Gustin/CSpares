@@ -8,7 +8,7 @@
 
 # Tools & flags
 CC=gcc
-CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3
+CFLAGS=--std=c99 --pedantic -Wall -W -Wmissing-prototypes -O3 -g
 LDFLAGS =  -lm
 LD=gcc
 

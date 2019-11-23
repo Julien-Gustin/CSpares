@@ -5,7 +5,11 @@
 
 /* Renvoie un pointeur sur le resultats */
 /* Ne pas oublier de free le vecteur ensuite */
-int *matrice_vecteurs_dense(MATRICE *s, int *v, const size_t N, double *sommeTot);
+double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N);
+
+double *vecteur_matrice_dense(MATRICE *s, double *v, const size_t N);
+
+
 
 typedef struct element{
    unsigned int ligne; // LA valeurs de la ligne
@@ -22,6 +26,6 @@ ELEMENTS *cree_element(unsigned ligne, unsigned colonne);
 void supprimer_elements(ELEMENTS *s, ELEMENTS *d);
 
 void ajouter_element(ELEMENTS *s, ELEMENTS *f);
-int *valeur_propre(MATRICE *a);
+double *valeur_propre(MATRICE *a);
 
 #endif

@@ -101,5 +101,5 @@ void destroy_fichier(MATRICE *matrice);
  * PARAMETRES
  * matrice        matrice creuse en structure
  * ------------------------------------------------------------------------- */
-void statistique(MATRICE matrice);  // 2*(O(2n) , n = nbrColonnes + O(4n), O(n log n))
+void statistique(MATRICE *matrice);  // 2*(O(2n) , n = nbrColonnes + O(4n), O(n log n))
 #endif
