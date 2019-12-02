@@ -28,11 +28,15 @@ int main(){
   t6 = clock();
 
 
+  /* Partie Valeur propre */
+
    t7 =  clock();
    double *v = valeur_propre(&d);
    if(!v)
       return 0;
    t8 = clock();
+   free(v);
+
 
    //
    // trice(&c);
@@ -49,7 +53,8 @@ int main(){
   temps3 = (float)(t6-t5)/CLOCKS_PER_SEC;
   double temps8 = (float)(t8-t7)/CLOCKS_PER_SEC;
   printf(" | durée de l'exécution = %f secondes pour la première fonction\n | durée de l'exécution = %f secondes pour la deuxième fonction\n | durée de l'exécution = %f secondes pour la troisieme fonction\n", temps, temps2, temps3);
- printf(" Durée vecteur propre %f\n", temps8);
+  printf(" Durée vecteur propre %f\n", temps8);
+
 
    destroy_fichier(&matrice);
    destroy_matrice(&matrice);

@@ -119,6 +119,16 @@ double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N) {
 }
 
 
+// static bool sont_differents(double *v, double *v0, size_t N) {
+//    for(size_t k =0; k < N; ++k) {
+//       if(v[k]%0.00001 != v0[k]%0.00001)
+//          return false;
+//    }
+//    return true;
+//
+// }
+
+
 double *valeur_propre(MATRICE *a) {
    /* a-> doit etre carré */
    if(a->nbrLignes != a->nbrColonnes) {
@@ -139,34 +149,43 @@ double *valeur_propre(MATRICE *a) {
    srand(time(NULL));
 
    for(size_t k = 0; k < a->nbrLignes; ++k)
-      v[k] = rand()%1000;
+      v[k] = rand();
 
+   /* Normalise */
+   for(size_t k = 0; k < a->nbrLignes; ++k)
+      norme += v[k] * v[k];
 
+   norme = sqrt(norme);
+
+   for(size_t k = 0; k < a->nbrLignes; ++k)
+      v[k] = v[k] / norme;
 
    while(norme != norme0 ) {
       v0 = v;
       norme0 = norme;
       v = matrice_vecteurs_dense(a, v, a->nbrLignes);
 
+
+      /* Normalisé v */
       norme = 0;
       for(size_t k = 0; k < a->nbrLignes; ++k)
          norme += v[k] * v[k];
 
-      printf("%lf\n", norme);
-
       norme = sqrt(norme);
 
-      for(size_t k = 0; k < a->nbrLignes; ++k){
+      for(size_t k = 0; k < a->nbrLignes; ++k)
          v[k] = v[k] / norme;
-      }
+
+      /* fin normalisé */
+
       free(v0);
       }
 
 
-
+      printf("Le vecteur propre est [");
       for(size_t k = 0; k < a->nbrLignes; ++k)
          printf("%f ",v[k]);
-      printf("\n\n");
+      printf("]\n\n");
 
 
 
@@ -182,8 +201,9 @@ double *valeur_propre(MATRICE *a) {
       for(size_t k = 0; k < a->nbrLignes; ++k)
          denum += v[k] * v[k];
 
-      printf("LA valeur propre est de %lf\n", num / denum);
+      printf("De valeur propre de plus grands modules %lf\n", num / denum);
 
+      free(resultat);
       return v;
 
 }
@@ -218,8 +238,6 @@ double *vecteur_matrice_dense(MATRICE *s, double *v, const size_t N) {
    /* compteur du tableau A.i[] */
    size_t j = 0;
 
-   /* Compteur dans le vecteur V */
-   size_t k = 0;
 
    for(size_t i = 0; i < s->nbrColonnes ; ++i) {
       /* Calcule le nombres d'éléments dans la collone i */
@@ -230,11 +248,10 @@ double *vecteur_matrice_dense(MATRICE *s, double *v, const size_t N) {
 
       /* Parcours tous les éléments d'une collone */
       nbreElements += j;
-      for(; j < nbreElements; ++j) {
-         z[k] += s->X[j] * v[j]; // Multiplications des composantes
+      for(; j < nbreElements && j < s->nz; ++j) {
+         z[i] += s->X[j] * v[s->I[j]]; // Multiplications des composantes
       }
 
-      ++k; // Car sa veut dire qu'on change de colone dans A.x[]
    }
 
 
