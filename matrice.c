@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+
 #include "matrice.h"
 #include "Sort.h"
-#include "produit.h"
-//#include "ju.h"
+#include "vecteur.h"
+
 /* ------------------------------------------------------------------------- *
  * Stockes tout les matricules, cours et le nombres de lignes du fichier en mémoire
  *
@@ -14,23 +15,6 @@
  * matrice      est une structure de données contenant les matricules, cours etc
  * ------------------------------------------------------------------------- */
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice);
-
-/* ------------------------------------------------------------------------- *
- * Affiche le nombres de filles de chaques cours
- *
- * PARAMETRES
- * matrice          matrice creuse ligne = cours, colonnes = étudiants
- * ------------------------------------------------------------------------- */
-static void stat_filles_cours(MATRICE matrice);
-
-/* ------------------------------------------------------------------------- *
- * Affiche le nombres d'eleve de l'annee donnée pour chaque cours
- *
- * PARAMETRES
- * matrice          matrice creuse ligne = cours, colonnes = étudiants
- * annee            annee des etudiants
- * ------------------------------------------------------------------------- */
-static void stat_cours_annee(MATRICE matrice, unsigned int annee);
 
 void destroy_matrice(MATRICE *matrice){
   free(matrice->P);
@@ -42,11 +26,6 @@ void destroy_fichier(MATRICE *matrice){
   free(matrice->fichier.cours);
   free(matrice->fichier.coursDif);
   free(matrice->fichier.matricules);
-}
-
-void destroy_vecteur(VECTEUR *vecteur){
-  free(vecteur->I);
-  free(vecteur->X);
 }
 
 static void fichier_en_memoire(FILE *fp, MATRICE *matrice){
@@ -219,95 +198,6 @@ if(vecteur == NULL)
   return matriceT;
 }
 
-// VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-//   unsigned int *X = calloc(matrice.nbrLignes, sizeof(unsigned int)); //contiendra les valeurs des éléments à leurs lignes respectives
-//   VECTEUR z;
-//   z.sommeTot = 0;
-//
-//   for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
-//     if(vecteur.I[i] < matrice.nbrColonnes-1){
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
-//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
-//     }
-//
-//     else{
-//       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
-//         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
-//     }
-//   }
-//
-//   size_t k = 0; // compteur;
-//
-//   for(size_t i = 0; i < matrice.nbrLignes; i++){ // k = nombres de non zero
-//     if(X[i] != 0)
-//       k++;
-//
-//   }
-//
-//   z.I = malloc(sizeof(unsigned int)*k);
-//   z.X = malloc(sizeof(unsigned int)*k);
-//
-//   k = 0;
-//
-//   for(size_t i = 0; i < matrice.nbrLignes; i++){
-//     if(X[i] != 0){
-//       z.I[k] = i;
-//       z.X[k] = X[i];
-//       z.sommeTot += X[i];
-//       k++;
-//     }
-//   }
-//
-//   free(X);
-//   z.nbrNonZero = k;
-//   return z;
-//
-// }
-VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
-  unsigned int *X = vecteur.Xtmp; //contiendra les valeurs des éléments à leurs lignes respectives
-  VECTEUR z;
-  z.sommeTot = 0;
-
-  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
-    if(vecteur.I[i] < matrice.nbrColonnes-1){
-      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
-        X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
-    }
-
-    else{
-      for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.nz; j++)
-        X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];
-    }
-  }
-
-  size_t k = 0; // compteur;
-
-  for(size_t i = 0; i < matrice.nbrLignes; i++){ // k = nombres de non zero
-    if(X[i] != 0)
-      k++;
-
-  }
-
-  z.I = malloc(sizeof(unsigned int)*k);
-  z.X = malloc(sizeof(unsigned int)*k);
-
-  k = 0;
-
-  for(size_t i = 0; i < matrice.nbrLignes; i++){
-    if(X[i] != 0){
-      z.I[k] = i;
-      z.X[k] = X[i];
-      z.sommeTot += X[i];
-      X[i] = 0;
-      k++;
-    }
-  }
-
-  z.nbrNonZero = k;
-  return z;
-
-}
-
 MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
   VECTEUR vecteur;
   VECTEUR resultat;
@@ -362,193 +252,4 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
     free(vecteur.I);
     free(vecteur.Xtmp);
 return c;
-
-}
-
-static void stat_filles_cours(MATRICE matrice){
-  VECTEUR filles; // vecteur
-  unsigned int nbrFilles = 0;
-
-  // comptes le nombres filles du fichier ( nombres impair )
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
-    if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
-      nbrFilles++;
-    }
-  }
-
-  if(nbrFilles == 0){
-    printf("Aucune fille");
-    return;
-  }
-
-  filles.I = malloc(sizeof(unsigned int) *nbrFilles);
-  if(filles.I == NULL)
-    return;
-
-  filles.X = malloc(nbrFilles *sizeof(unsigned int));
-  if(filles.X ==  NULL)
-    return;
-
-  for(size_t i = 0; i < nbrFilles; i++)
-    filles.X[i] = 1;
-
-  filles.nbrNonZero = nbrFilles;
-  filles.sommeTot = 0;
-  filles.Xtmp = calloc(matrice.nbrLignes, sizeof(unsigned int));
-
-
-  size_t k = 0;
-
-  //stocke l'indice des matricules impair
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
-    if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
-      filles.I[k] = i;
-      k++;
-    }
-  }
-
-  VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, filles);
-
-  for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
-    printf("%s filles :%u\n", matrice.fichier.coursDif[resultat.I[i]], resultat.X[i]);
-
-  destroy_vecteur(&resultat);
-  destroy_vecteur(&filles);
-
-}
-
-static void stat_cours_annee(MATRICE matrice, unsigned int annee){
-  VECTEUR eleveAnnee;
-  unsigned int nbrELeveAnnee = 0;
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
-  //  printf("%u\n", matrice.fichier.matricules[matrice.P[i]] / 10000);
-    if(!((matrice.fichier.matricules[matrice.P[i]]/10000) % annee)){
-      nbrELeveAnnee++;
-    }
-  }
-
-  if(nbrELeveAnnee == 0){
-    printf("Aucun éléve de %u\n", annee);
-    return;
-  }
-
-  eleveAnnee.I = malloc(sizeof(unsigned int)*nbrELeveAnnee);
-  if(eleveAnnee.I == NULL)
-    return;
-
-  eleveAnnee.X = malloc(sizeof(unsigned int) *nbrELeveAnnee);
-  if(eleveAnnee.X == NULL)
-    return;
-
-  for(size_t i = 0; i < nbrELeveAnnee; i++)
-    eleveAnnee.X[i] = 1;
-
-  eleveAnnee.nbrNonZero = nbrELeveAnnee;
-  eleveAnnee.sommeTot = 0;
-  eleveAnnee.Xtmp = calloc(matrice.nbrLignes, sizeof(unsigned int));
-
-  size_t k = 0;
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
-    if(!((matrice.fichier.matricules[matrice.P[i]]/10000) % annee)){
-      eleveAnnee.I[k] = i;
-      k++;
-    }
-  }
-
-  VECTEUR resultat = mult_matrice_vecteurs_creux(matrice, eleveAnnee);
-
-  for(size_t i = 0; i < resultat.nbrNonZero; i++) // Le printf prends du temps, pour la demo montrer sans printf
-    printf("%s annee :%d :%u\n", matrice.fichier.coursDif[resultat.I[i]], annee, resultat.X[i]);
-
-  destroy_vecteur(&resultat);
-  destroy_vecteur(&eleveAnnee);
-
-}
-
-
-static void statistique_nbrEleveCours(MATRICE* matrice) {
-
-
-   double *vecteur1 = malloc(sizeof(double)* matrice->nbrColonnes);
-   if(!vecteur1) {
-      fprintf(stderr, "Erreur lors de l'allocation!\n");
-      exit(EXIT_FAILURE);
-   }
-
-
-   /* Remplir le vecteur de 1 */
-   for(size_t k = 0; k < matrice->nbrColonnes; ++k)
-      vecteur1[k] = 1;
-
-   // for(size_t k = 0; k < matrice->nbrColonnes; ++k)
-   //    printf("%f\n")
-
-   double *resultat =
-      matrice_vecteurs_dense( matrice, vecteur1, matrice->nbrColonnes);
-   if(!resultat)
-      exit(EXIT_FAILURE);
-
-
-
-   /* Utilisons notre dictionnaire */
-
-
-   printf("Nombre d'étudiants qui suivent le cours de:\n");
-   for(size_t k = 0; k < matrice->nbrLignes; ++k)
-      printf("%s:  %.0f\n", matrice->fichier.coursDif[k], resultat[k]);
-
-   free(vecteur1);
-   free(resultat);
-
-}
-
-
-void statistique(MATRICE *matrice){
-  stat_filles_cours(*matrice); // O(2n) , n = nbrColonnes + O(4n), O(n log n)
-  stat_cours_annee(*matrice, 2008); // O(2n) , n = nbrColonnes  + O(4n), O(n log n)
-  statistique_nbrEleveCours(matrice);
-
-}
-
-
-
-
-
-
-void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT){
-  MATRICE resultat = produit_matrice_creuses(&matriceT, &matrice);;
-
-  for(size_t i = 0; i < resultat.nbrColonnes; i++){
-    if(i != resultat.nbrColonnes-1){
-      for(size_t j = resultat.P[i]; j < resultat.P[i+1]; j++){
-        if(resultat.I[j] != i)
-          printf("étudiants %u à %u cours en commun avec %u\n", matrice.fichier.matricules[matrice.P[i]], resultat.X[j], resultat.fichier.matricules[matrice.P[resultat.I[j]]]);
-      }
-  }
-    else{
-      for(size_t j = resultat.P[i]; j < resultat.nz; j++){
-        if(resultat.I[j] != i)
-          printf("étudiants %u à %u cours en commun avec %u\n", matrice.fichier.matricules[matrice.P[i]], resultat.X[j], resultat.fichier.matricules[matrice.P[resultat.I[j]]]);
-      }
-    }
-  }
-}
-
-void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT){
-  MATRICE resultat = produit_matrice_creuses(&matrice, &matriceT);;
-
-  for(size_t i = 0; i < resultat.nbrColonnes; i++){
-    if(i != resultat.nbrColonnes-1){
-      for(size_t j = resultat.P[i]; j < resultat.P[i+1]; j++){
-        if(resultat.I[j] != i)
-          printf("le cours %s à %u eleve en commun avec le cours %s\n", matrice.fichier.coursDif[i], resultat.X[j], resultat.fichier.coursDif[resultat.I[j]]);
-      }
-  }
-    else{
-      for(size_t j = resultat.P[i]; j < resultat.nz; j++){
-        if(resultat.I[j] != i) // > pour éviter doublon
-          printf("le cours %s à %u eleve en commun avec le cours %s\n", matrice.fichier.coursDif[i], resultat.X[j], resultat.fichier.coursDif[resultat.I[j]]);
-      }
-    }
-  }
 }

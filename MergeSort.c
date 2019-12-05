@@ -9,6 +9,7 @@
 #include <limits.h>
 #include <assert.h>
 #include <string.h>
+
 #include "Sort.h"
 #include "matrice.h"
 
@@ -158,61 +159,6 @@ static void Merge2(unsigned int* array, char (*cours)[MAX], size_t p, size_t q, 
   free(R2);
 }
 
-/*static void Merge3(unsigned int* array, size_t p, size_t q, size_t length);
-
-static void Merge3(unsigned int* array, size_t p, size_t q, size_t length){
-  assert(p <= q && q < length); // On ne peut pas avoir de tableau vide
-  assert(length > 0);
-
-  size_t n1 = q - p + 1;
-  size_t n2 = length - q;
-  unsigned int *L = malloc(sizeof(unsigned int) *(n1+1)); // la dernière case du tableau est réservé pour le dernier entier possible
-  if(L == NULL)
-    return;
-
-  unsigned int *R = malloc(sizeof(unsigned int) *(n2+1)); // la dernière case du tableau est réservé pour le dernier entier possible
-  if(R == NULL)
-    return;
-
-  for(size_t i = 0; i < n1; i++) // copie une partie du tableau tel que : L[] = array[p..p+n1]
-    L[i] = array[p+i];
-
-  for(size_t j = 0; j < n2; j++) // copie une partie du tableau tel que : R[] = array[q+1..q+n2+1]
-    R[j] = array[q+j+1];
-
-  L[n1] = INT_MAX; // Parce que rien n'est plus grand que INT_MAX
-  R[n2] = INT_MAX;
-
-  size_t i = 0;
-  size_t j = 0;
-
-  for(unsigned long k = p; k <= length; k++){ // Fusion
-    if(L[i] <= R[j]){
-      array[k] = L[i];
-      i++;
-    }
-    else{
-      array[k] = R[j];
-      j++;
-    }
-  }
-
-  free(L);
-  free(R);
-
-}*/
-/*
-static void MergeSort3(unsigned int* array, size_t p, size_t length){
-
-  if(p < length){
-    size_t q = (length+p)/2; // Scinde le tableau en deux
-    MergeSort3(array, p, q);
-    MergeSort3(array, q+1, length);
-
-    Merge3(array, p, q, length); // Fusionne deux sous tableaux déjà trié
-  }
-}*/
-
 static void MergeSort2(unsigned int* array, char (*cours)[MAX], size_t p, size_t length){
 
   if(p < length){
@@ -241,14 +187,7 @@ void sort(unsigned int* array, unsigned int *cours, size_t length){
 
   MergeSort(array, cours, 0, length-1); //array[0..length-1]
   }
-/*
-void sortv3(unsigned int* array, size_t length){
-  if(array == NULL || length == 0)
-    return;
 
-  MergeSort3(array, 0, length-1); //array[0..length-1]
-}
-*/
 
 static int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );

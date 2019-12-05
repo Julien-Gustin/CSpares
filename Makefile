@@ -14,8 +14,8 @@ LD=gcc
 
 # Files
 EXEC_WILCOXON=main
-MODULES_WILCOXON=main.c matrice.c MergeSort.c produit.c
-OBJECTS_WILCOXON=main.o matrice.o MergeSort.o produit.o
+MODULES_WILCOXON=main.c matrice.c MergeSort.c vecteur.c statistique.c
+OBJECTS_WILCOXON=main.o matrice.o MergeSort.o vecteur.o statistique.o
 
 
 EXEC_ALL=main
@@ -36,14 +36,14 @@ matrice.o: matrice.c
 MergeSort.o: MergeSort.c
 	$(CC) -c MergeSort.c -o MergeSort.o $(CFLAGS)
 
-produit.o: produit.c
-	$(CC) -c produit.c -o produit.o $(CFLAGS)
+vecteur.o: vecteur.c
+	$(CC) -c vecteur.c -o vecteur.o $(CFLAGS)
 
-ju.o: ju.c
-	$(CC) -c ju.c -o ju.o $(CFLAGS)
+statistique.o: statistique.c
+	$(CC) -c statistique.c -o statistique.o $(CFLAGS)
 
 c:	$(EXEC_ALL)
-	./$(EXEC_ALL)
+	valgrind --leak-check=full ./$(EXEC_ALL)
 
 clean:
 	rm -f *.o $(EXEC_ALL) *~

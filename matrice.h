@@ -6,7 +6,6 @@
 
 typedef struct matrice_t MATRICE;
 typedef struct donnee_t DONNEE;
-typedef struct vecteur_t VECTEUR;
 
 struct donnee_t{
   char (*cours)[MAX]; // Tout les cours stocké avec repetition
@@ -25,18 +24,9 @@ struct matrice_t{
   size_t nbrColonnes;
 };
 
-struct vecteur_t{
-  unsigned int *I; // lignes
-  unsigned int *X; // valeur de la ligne
-  unsigned int nbrNonZero; // nombres d'éléménts, donc taille de I
-  unsigned int sommeTot; // sommes de tout les éléments
-
-  unsigned int *Xtmp;
-};
-
 
 /* ------------------------------------------------------------------------- *
- * Renvois une matrice creuse, lu dans un fichier et transformeé en structure
+ * (1) Renvois une matrice creuse, lu dans un fichier et transformeé en structure
  *
  * PARAMETRES
  * input        nom du fichier
@@ -47,7 +37,7 @@ struct vecteur_t{
 MATRICE fichier_en_matrice(char* input); // O(2n) + O(2m(log(m)) + O(3m), n = nombres lignes et m = non zero
 
 /* ------------------------------------------------------------------------- *
- * Transpose la matrice données en argument ( structure )
+ * (2) Transpose la matrice données en argument ( structure )
  *
  * PARAMETRES
  * matrice        matrice creuse en structure
@@ -58,19 +48,16 @@ MATRICE fichier_en_matrice(char* input); // O(2n) + O(2m(log(m)) + O(3m), n = no
 MATRICE transposee_matrice(MATRICE matrice); // O(4m)
 
 /* ------------------------------------------------------------------------- *
- * Multiplie une matrice creuse avec un vecteur creux et renvois cette multiplication
+ * (7) Fait le produit de deux matrices creuses
  *
  * PARAMETRES
  * matrice        matrice creuse en structure
- * vecteur        vecteur creux
  *
  * RETURN
- * vecteur creux
+ * matrice creuse
  * ------------------------------------------------------------------------- */
-VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur); // O(4n), O(n log n)
 MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b);
-void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT);
-void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT);
+
 /* ------------------------------------------------------------------------- *
  * libere le contenu d'une matrice
  *
@@ -80,26 +67,10 @@ void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT);
 void destroy_matrice(MATRICE *matrice);
 
 /* ------------------------------------------------------------------------- *
- * libere le contenu d'un vecteur
- *
- * PARAMETRES
- * vecteur        pointeur vers un vecteur creux en structure
- * ------------------------------------------------------------------------- */
-void destroy_vecteur(VECTEUR *vecteur);
-
-/* ------------------------------------------------------------------------- *
  * libere le contenu d'un fichier stockée en mémoire
  *
  * PARAMETRES
  * matrice        pointeur vers une matrice creuse en structure
  * ------------------------------------------------------------------------- */
 void destroy_fichier(MATRICE *matrice);
-
-/* ------------------------------------------------------------------------- *
- * Affiche diverse statistique comme le nombres de filles dans un cours etc...
- *
- * PARAMETRES
- * matrice        matrice creuse en structure
- * ------------------------------------------------------------------------- */
-void statistique(MATRICE *matrice);  // 2*(O(2n) , n = nbrColonnes + O(4n), O(n log n))
 #endif
