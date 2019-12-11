@@ -43,7 +43,7 @@ statistique.o: statistique.c
 	$(CC) -c statistique.c -o statistique.o $(CFLAGS)
 
 c:	$(EXEC_ALL)
-	valgrind --leak-check=full ./$(EXEC_ALL)
+	valgrind ./$(EXEC_ALL)
 
 clean:
 	rm -f *.o $(EXEC_ALL) *~

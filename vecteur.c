@@ -103,7 +103,7 @@ double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N) {
    return z;
 }
 
-double *valeur_propre(MATRICE *a) {
+VECTEUR *valeur_propre(MATRICE *a) {
    /* a-> doit etre carré */
    if(a->nbrLignes != a->nbrColonnes) {
       printf("La valeur propre d'une matrice non carré n'existe pas\n");
@@ -125,16 +125,11 @@ double *valeur_propre(MATRICE *a) {
    for(size_t k = 0; k < a->nbrLignes; ++k)
       v[k] = rand();
 
-   /* Normalise */
-   for(size_t k = 0; k < a->nbrLignes; ++k)
-      norme += v[k] * v[k];
 
-   norme = sqrt(norme);
 
-   for(size_t k = 0; k < a->nbrLignes; ++k)
-      v[k] = v[k] / norme;
 
-   while(norme != norme0 ) {
+   int i = 0; // permet de gerer le cas si sa ne converge pas
+   while(norme != norme0 && i < 10000) {
       v0 = v;
       norme0 = norme;
       v = matrice_vecteurs_dense(a, v, a->nbrLignes);
@@ -142,20 +137,21 @@ double *valeur_propre(MATRICE *a) {
       /* Normalisé v */
       norme = 0;
       for(size_t k = 0; k < a->nbrLignes; ++k)
-         norme += v[k] * v[k];
+         norme += v[k]*v[k];
 
       norme = sqrt(norme);
 
       for(size_t k = 0; k < a->nbrLignes; ++k)
          v[k] = v[k] / norme;
       /* fin normalisé */
-
       free(v0);
+      ++i;
       }
 
       printf("Le vecteur propre est [");
-      for(size_t k = 0; k < a->nbrLignes; ++k)
+      for(size_t k = 0; k < a->nbrLignes; ++k) {
          printf("%f ",v[k]);
+      }
       printf("]\n\n");
 
       /* Une fois le vecteur propre de plus grand module calculer */
@@ -163,17 +159,49 @@ double *valeur_propre(MATRICE *a) {
 
       double *resultat =  vecteur_matrice_dense(a, v, a->nbrLignes);
       double num = 0;
-      for(size_t k = 0; k < a->nbrLignes; ++k)
+      unsigned int nonNul = 0;
+      const double EPSILON = 0.000001;
+
+      for(size_t k = 0; k < a->nbrLignes; ++k) {
          num += resultat[k] * v[k];
+         if(v[k] > EPSILON) // si v[k] != 0
+            ++nonNul;
+      }
+
+      VECTEUR *vPropre = malloc(sizeof(VECTEUR));
+      if(!vPropre)
+         return NULL;
+      vPropre->I = malloc(sizeof(int)* nonNul);
+      if(!vPropre->I) {
+         free(vPropre);
+         return 0;
+      }
+
+      vPropre->X = malloc(sizeof(int)* nonNul);
+      if(!vPropre->X) {
+         free(vPropre->I);
+         free(vPropre);
+         return 0;
+      }
+      vPropre->nbrNonZero = nonNul;
 
       double denum = 0; // denumerateur
-      for(size_t k = 0; k < a->nbrLignes; ++k)
+      int j =0;
+      for(size_t k = 0; k < a->nbrLignes; ++k) {
          denum += v[k] * v[k];
+         if(v[k] < EPSILON) {
+            vPropre->I[j] = k;
+            vPropre->X[j] = v[k];
+         }
+      }
 
-      printf("De valeur propre de plus grands modules %lf\n", num / denum);
+      vPropre->valeurPropre = num / denum;
+      printf("De valeur propre de plus grands modules %lf\n",
+         vPropre->valeurPropre);
 
+      free(v);
       free(resultat);
-      return v;
+      return vPropre;
 }
 
 double *vecteur_matrice_dense(MATRICE *s, double *v, const size_t N) {

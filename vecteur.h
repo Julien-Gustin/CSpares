@@ -11,6 +11,7 @@ struct vecteur_t{
   unsigned int nbrNonZero; // nombres d'éléménts, donc taille de I
   unsigned int sommeTot; // sommes de tout les éléments
 
+  double valeurPropre; // La valeur propre de plus grand module du vecteur
   unsigned int *Xtmp;
 };
 
@@ -22,7 +23,7 @@ double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N);
 double *vecteur_matrice_dense(MATRICE *s, double *v, const size_t N); //le quel ?
 
 // (8) TODO DOCUMENTATION
-double *valeur_propre(MATRICE *a);
+VECTEUR *valeur_propre(MATRICE *a);
 
 /* ------------------------------------------------------------------------- *
  * libere le contenu d'un vecteur
