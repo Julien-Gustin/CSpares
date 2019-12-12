@@ -11,7 +11,7 @@
 void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT){
   MATRICE resultat = produit_matrice_creuses(&matriceT, &matrice);;
 
-  for(size_t i = 0; i < resultat.nbrColonnes; i++){
+  for(size_t i = 0; i < resultat.nbrColonnes; i++){ // O(n)
     if(i != resultat.nbrColonnes-1){
       for(size_t j = resultat.P[i]; j < resultat.P[i+1]; j++){
         if(resultat.I[j] != i)
@@ -28,7 +28,7 @@ void etudiant_commun_cours(MATRICE matrice, MATRICE matriceT){
   destroy_matrice(&resultat);
 }
 
-void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT){
+void cours_commun_etudiant(MATRICE matrice, MATRICE matriceT){ //O(n)
   MATRICE resultat = produit_matrice_creuses(&matrice, &matriceT);;
 
   for(size_t i = 0; i < resultat.nbrColonnes; i++){
@@ -57,7 +57,7 @@ void statistique_nbrEleveCours(MATRICE* matrice) {
    }
 
    /* Remplir le vecteur de 1 */
-   for(size_t k = 0; k < matrice->nbrColonnes; ++k)
+   for(size_t k = 0; k < matrice->nbrColonnes; ++k) // O(c)
       vecteur1[k] = 1;
 
    double *resultat =
@@ -69,7 +69,7 @@ void statistique_nbrEleveCours(MATRICE* matrice) {
    /* Utilisons notre dictionnaire */
 
    printf("Nombre d'étudiants qui suivent le cours de:\n");
-   for(size_t k = 0; k < matrice->nbrLignes; ++k)
+   for(size_t k = 0; k < matrice->nbrLignes; ++k) // O(n)
       printf("%s:  %.0f\n", matrice->fichier.coursDif[k], resultat[k]);
 
    free(vecteur1);
@@ -81,7 +81,7 @@ void stat_filles_cours(MATRICE matrice){
   unsigned int nbrFilles = 0;
 
   // comptes le nombres filles du fichier ( nombres impair )
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){ // O(c)
     if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
       nbrFilles++;
     }
@@ -110,7 +110,7 @@ void stat_filles_cours(MATRICE matrice){
   size_t k = 0;
 
   //stocke l'indice des matricules impair
-  for(size_t i = 0; i < matrice.nbrColonnes; i++){
+  for(size_t i = 0; i < matrice.nbrColonnes; i++){ // O(c)
     if((matrice.fichier.matricules[matrice.P[i]] % 2) != 0){
       filles.I[k] = i;
       k++;
