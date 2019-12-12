@@ -15,12 +15,12 @@ void destroy_vecteur(VECTEUR *vecteur){
     free(vecteur->Xtmp);
 }
 
-VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
+VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){ // O(n)
   unsigned int *X = vecteur.Xtmp; //contiendra les valeurs des éléments à leurs lignes respectives
   VECTEUR z;
   z.sommeTot = 0;
 
-  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats
+  for(size_t i = 0; i < vecteur.nbrNonZero; i++){ // remplis X[] tel que l'indice de la case = lignes de z.I[] ou z.X[] sont les résultats, est O(n )si vecteur dense
     if(vecteur.I[i] < matrice.nbrColonnes-1){
       for(size_t j = matrice.P[vecteur.I[i]]; j < matrice.P[vecteur.I[i]+1]; j++)
         X[matrice.I[j]] += vecteur.X[i] * matrice.X[j];

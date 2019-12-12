@@ -77,7 +77,7 @@ MATRICE fichier_en_matrice(char* input){
 
   MATRICE matrice; // matrice creuse sous formes de structures de données
 
-  fichier_en_memoire(fp, &matrice); // O(2n), n = nbr Lignes du fichier
+  fichier_en_memoire(fp, &matrice); // O(2n), n = nbr Lignes du fichier, nz
 
   sort_string(matrice.fichier.matricules, matrice.fichier.cours, matrice.nz); //trie la matrice ( chaque cours correpond bien à son étudiants ) 2n*Log(n)
 
@@ -162,7 +162,7 @@ MATRICE transposee_matrice(MATRICE matrice){
 
   matriceT.P[0] = 0 ;
 
-  for(size_t i = 1; i < matrice.nz; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1]
+  for(size_t i = 1; i < matrice.nz; i++) // complete A_t.P, tel que: P[i] = la valeur de la case précédentes ( P[i-1]) + la valeur de rowcount à l'indice précédent aussi rowcount[i-1] // O(n)
     matriceT.P[i] = matriceT.P[i-1] + rowcount[i-1];
  /* == fin matrice.P == */
 
@@ -173,10 +173,10 @@ MATRICE transposee_matrice(MATRICE matrice){
 if(vecteur == NULL)
   return matriceT;
 
- for(size_t i  = 0; i < matriceT.nz; i++)
+ for(size_t i  = 0; i < matriceT.nz; i++) // O(n)
   vecteur[i] = matriceT.P[i];
 
- for(size_t i = 0; i < matrice.nbrColonnes-1; i++){ // remplis matrice.I
+ for(size_t i = 0; i < matrice.nbrColonnes-1; i++){ // remplis matrice.I // O(n) pour les deux for
    for(size_t j = matrice.P[i]; j < matrice.P[i+1]; j++){
      matriceT.I[vecteur[matrice.I[j]]] = i;
      matriceT.X[vecteur[matrice.I[j]]] = matrice.X[j];
@@ -218,7 +218,7 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
 
   vecteur.Xtmp = calloc(a->nbrLignes, sizeof(unsigned int));
 
-  for(size_t i = 0; i < b->nbrColonnes; i++){
+  for(size_t i = 0; i < b->nbrColonnes; i++){ // O(2n) + O(c * 3n)
     if(i != b->nbrColonnes-1) // jusque derniere colonnes car apres la derniere colonne il y a nz
       vecteur.nbrNonZero = b->P[i+1] - b->P[i]; // le nombre de non zero d'une colonne est la différence de la premiere moins la secondes
 
@@ -230,7 +230,7 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
       vecteur.X[j] = b->X[b->P[i] + j];
     }
 
-  resultat = mult_matrice_vecteurs_creux(*a, vecteur); // multiplocation matrice, vecteur
+  resultat = mult_matrice_vecteurs_creux(*a, vecteur); // multiplocation matrice, vecteur //O(n) +O(l), le pire des cas n'arrive jamais
 
   if(i != b->nbrColonnes-1) // on complete c colonne par colonne à l'aide des résultats de "resultat"
     c.P[i+1] = c.P[i] + resultat.nbrNonZero;
@@ -238,7 +238,7 @@ MATRICE produit_matrice_creuses(MATRICE *a, MATRICE *b){
   else
     c.nz = c.P[i] + resultat.nbrNonZero;
 
-  for(size_t j = 0; j < resultat.nbrNonZero; j++){
+  for(size_t j = 0; j < resultat.nbrNonZero; j++){ // O(n)
     c.I[c.P[i] + j] = resultat.I[j];
     c.X[c.P[i] + j] = resultat.X[j];
   }
