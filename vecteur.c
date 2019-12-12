@@ -129,7 +129,7 @@ VECTEUR *valeur_propre(MATRICE *a) {
 
    // permet de gerer le cas si sa ne converge pas
    const int COEF_LIMITE = 10;
-   int i = 0;
+   unsigned int i = 0;
 
    /* O(n*nz) */
    while(norme != norme0 && i < a->nbrLignes * COEF_LIMITE) {
