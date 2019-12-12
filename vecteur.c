@@ -60,6 +60,7 @@ VECTEUR mult_matrice_vecteurs_creux(MATRICE matrice, VECTEUR vecteur){
   return z;
 }
 
+/* O(s->nz) */
 double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N) {
    assert(s && v);
 
@@ -104,7 +105,7 @@ double *matrice_vecteurs_dense(MATRICE *s, double *v, const size_t N) {
 }
 
 VECTEUR *valeur_propre(MATRICE *a) {
-   /* a-> doit etre carré */
+   /* a doit etre carré */
    if(a->nbrLignes != a->nbrColonnes) {
       printf("La valeur propre d'une matrice non carré n'existe pas\n");
       return NULL;
@@ -126,10 +127,12 @@ VECTEUR *valeur_propre(MATRICE *a) {
       v[k] = rand();
 
 
+   // permet de gerer le cas si sa ne converge pas
+   const int COEF_LIMITE = 10;
+   int i = 0;
 
-
-   int i = 0; // permet de gerer le cas si sa ne converge pas
-   while(norme != norme0 && i < 10000) {
+   /* O(n*nz) */
+   while(norme != norme0 && i < a->nbrLignes * COEF_LIMITE) {
       v0 = v;
       norme0 = norme;
       v = matrice_vecteurs_dense(a, v, a->nbrLignes);
@@ -146,6 +149,11 @@ VECTEUR *valeur_propre(MATRICE *a) {
       /* fin normalisé */
       free(v0);
       ++i;
+      }
+
+      if(i == a->nbrLignes * COEF_LIMITE) {
+         printf("Le vecteur n'a pas convergé\n");
+         return NULL;
       }
 
       printf("Le vecteur propre est [");
