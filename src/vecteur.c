@@ -110,6 +110,10 @@ VECTEUR *valeur_propre(MATRICE *a) {
       printf("La valeur propre d'une matrice non carré n'existe pas\n");
       return NULL;
    }
+
+   FILE *fp = fopen("statistique.txt", "w");
+   if(fp == NULL)
+     return NULL;
    double norme = 0;
    double norme0 = 1;
 
@@ -152,15 +156,15 @@ VECTEUR *valeur_propre(MATRICE *a) {
       }
 
       if(i == a->nbrLignes * COEF_LIMITE) {
-         printf("Le vecteur n'a pas convergé\n");
+         fprintf(fp, "Le vecteur n'a pas convergé\n");
          return NULL;
       }
 
-      printf("Le vecteur propre est [");
+      fprintf(fp, "Le vecteur propre est [");
       for(size_t k = 0; k < a->nbrLignes; ++k) {
-         printf("%f ",v[k]);
+         fprintf(fp, "%f ",v[k]);
       }
-      printf("]\n\n");
+      fprintf(fp, "]\n\n");
 
       /* Une fois le vecteur propre de plus grand module calculer */
       /* Calcule de la valeur propre */
@@ -204,9 +208,10 @@ VECTEUR *valeur_propre(MATRICE *a) {
       }
 
       vPropre->valeurPropre = num / denum;
-      printf("De valeur propre de plus grands modules %lf\n",
+      fprintf(fp, "De valeur propre de plus grands modules %lf\n",
          vPropre->valeurPropre);
 
+      fclose(fp);
       free(v);
       free(resultat);
       return vPropre;
